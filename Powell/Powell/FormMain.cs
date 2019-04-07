@@ -17,9 +17,20 @@ namespace Powell
         {
             InitializeComponent();
 
-            ExpressionExt expression = new ExpressionExt("x1^2-x2^2", 2);
-            GraphRenderer renderer = new GraphRenderer(pictureBoxGraph, new GraphRenderer.Range(-5, 5), new GraphRenderer.Range(-5,5), expression);
-            renderer.Render();
+            // example R^2 equations:
+            // -------------------------------------
+            // x1*exp(-x1^2-x2^2)
+            // (sin(x1)^2 + cos(x2)^2) / (5 + x1^2 + x2^2)
+            // x1^4 + x2^4 - 2*x1^2*x2 - 4*x1 + 3
+            // (x1-2)^2 + (x2-2)^2
+            // -------------------------------------
+
+            ExpressionExt expression = new ExpressionExt("(sin(x1)^2 + cos(x2)^2) / (5 + x1^2 + x2^2)", 2);
+            GraphRenderer renderer = new GraphRenderer(pictureBoxGraph, expression);
+            renderer.RangeHorizontal = new GraphRenderer.Range(-4, 4);
+            renderer.RangeVertical = new GraphRenderer.Range(-4, 4);
+            renderer.IsolineCount = 10;
+            renderer.Render(true);
         }
     }
 }

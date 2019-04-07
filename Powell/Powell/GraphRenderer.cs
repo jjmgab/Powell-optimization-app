@@ -6,6 +6,9 @@ using System.Windows.Forms;
 
 namespace Powell
 {
+    /// <summary>
+    /// Class responsible for rendering the graph of ExpressionExt function on provided PictureBox.
+    /// </summary>
     public class GraphRenderer
     {
         /// <summary>
@@ -23,7 +26,15 @@ namespace Powell
         /// </summary>
         public Color BackgroundColor { get; set; } = Color.White;
 
+        /// <summary>
+        /// Number of points in row/column. Setting up too high value may result in severe performance problems.
+        /// </summary>
         public int Points { get; set; } = 300;
+
+        /// <summary>
+        /// Numbers of isolines drawn.
+        /// </summary>
+        public int IsolineCount { get; set; } = 5;
 
         /// <summary>
         /// Target PictureBox, on which the graph will be rendered.
@@ -73,7 +84,7 @@ namespace Powell
         /// <param name="target"></param>
         /// <param name="rangeH"></param>
         /// <param name="rangeV"></param>
-        public GraphRenderer(System.Windows.Forms.PictureBox target, Range rangeH, Range rangeV, ExpressionExt expression)
+        public GraphRenderer(System.Windows.Forms.PictureBox target, ExpressionExt expression, Range rangeH, Range rangeV)
         {
             TargetPictureBox = target;
             RangeHorizontal = rangeH;
@@ -87,58 +98,79 @@ namespace Powell
         }
 
         /// <summary>
+        /// Constructor. Initializes target PictureBox and Expression, leaving Range default.
+        /// </summary>
+        /// <param name="target"></param>
+        /// <param name="expression"></param>
+        public GraphRenderer(System.Windows.Forms.PictureBox target, ExpressionExt expression)
+        : this(target, expression, new Range(-5, 5), new Range(-5, 5)) { }
+
+
+        /// <summary>
         /// Renders the graph.
         /// </summary>
-        public void Render()
+        public void Render(bool drawIsolines)
         {
-            //DrawAxis(TargetPictureBox.Image);
-            DrawSurface(TargetPictureBox.Image, new Padding(20,20,20,20), true);
-            //DrawGrid(TargetPictureBox.Image);
+            Padding pad = new Padding(20, 0, 0, 20);
+
+            DrawSurface(TargetPictureBox.Image, pad, drawIsolines);
+            DrawAxis(TargetPictureBox.Image, pad, 5);
             
+            // redraw graph
             TargetPictureBox.Invalidate();
         }
 
         /// <summary>
-        /// Prepares the graph, by clearing it and drawing axes.
+        /// Prepares the graph, by drawing axes.
         /// </summary>
         /// <param name="img"></param>
-        private void DrawAxis(Image img)
+        private void DrawAxis(Image img, Padding pad, int scalePads)
         {
             using (Graphics g = Graphics.FromImage(img))
             {
-                g.Clear(BackgroundColor);
+                Pen pen = new Pen(Color.Black, 1);
+                Brush brush = new SolidBrush(Color.Black);
+                Font fontAxisLabel = new Font(FontFamily.GenericSerif, 15, GraphicsUnit.Pixel);
+                Font fontScaleLabel = new Font(FontFamily.GenericSerif, 10, GraphicsUnit.Pixel);
 
-                g.TranslateTransform(0, img.Height);
+                // draw axis lines
+                g.DrawLine(pen, pad.Left, pad.Top, pad.Left, img.Height - pad.Bottom);
+                g.DrawLine(pen, pad.Left, img.Height - pad.Bottom, img.Width - pad.Right, img.Height - pad.Bottom);
 
-                g.DrawLine(new Pen(Color.Black), 20, -20, 20, -(img.Height - 20));
-                g.DrawLine(new Pen(Color.Black), 20, -20, img.Width - 20, -20);
+                // draw x1 and x2 labels
+                g.DrawString("x1", fontAxisLabel, brush, img.Width - pad.Left, img.Height - pad.Bottom);
+                g.DrawString("x2", fontAxisLabel, brush, 0, 5);
 
-                //g.DrawString("123", new Font(FontFamily.GenericSerif, 10), new SolidBrush(Color.Black), 20, -20);
+                // draw axis scale and values
+                double horizontalStep = (double)(img.Width - pad.Left - pad.Right) / scalePads;
+                double verticalStep = (double)(img.Height - pad.Top - pad.Bottom) / scalePads;
+                double horizontalRangeStep = (RangeHorizontal.End - RangeHorizontal.Start) / scalePads;
+                double verticalRangeStep = (RangeVertical.End - RangeVertical.Start) / scalePads;
 
-                //g.RotateTransform(-90);
-                //g.TranslateTransform(-100, 0);
-            }
-        }
-
-        /// <summary>
-        /// Draws the grid.
-        /// </summary>
-        /// <param name="img"></param>
-        private void DrawGrid(Image img)
-        {
-            using (Graphics g = Graphics.FromImage(img))
-            {
-                int horizontalStep = (img.Width - 40) / 5;
-                int verticalStep = (img.Height - 40) / 5;
-                Pen p = new Pen(Color.Gray);
+                // drawing lines on horizontal axis
+                for (int i = 0; i <= scalePads; i++)
+                    g.DrawLine(pen, (float)(pad.Left + i * horizontalStep), img.Height - pad.Bottom, (float)(pad.Left + i * horizontalStep), img.Height - pad.Bottom + 3);
                 
-                for (int i = 0; i < 5; i++)
+                // drawing values
+                for (int i = 0; i < scalePads; i++)
                 {
-                    g.DrawLine(p, 21, 20 + i * verticalStep, img.Width - 20, 20 + i * verticalStep);
+                    int labelPadding = (RangeHorizontal.Start + i * horizontalRangeStep) < 0 ? 10 : 7;
+                    g.DrawString(((float)(RangeHorizontal.Start + i * horizontalRangeStep)).ToString(), fontScaleLabel, brush, (float)(pad.Left + i * horizontalStep - labelPadding), img.Height - pad.Bottom + 3);
                 }
-                for (int i = 1; i <= 5; i++)
+
+                // drawing lines on vertical axis
+                for (int i = 0; i <= scalePads; i++)
+                    g.DrawLine(pen, pad.Left, (float)(img.Height - pad.Bottom - i * verticalStep), pad.Left -3, (float)(img.Height - pad.Bottom - i * verticalStep));
+                
+                // applying transformation, in order to draw rotated text
+                g.RotateTransform(-90);
+                g.TranslateTransform(-img.Height, 0);
+                
+                // drawing values
+                for (int i = 0; i < scalePads; i++)
                 {
-                    g.DrawLine(p, 20 + i * horizontalStep, 21, 20 + i * horizontalStep, img.Height - 20);
+                    int labelPadding = (RangeVertical.Start + i * verticalRangeStep) < 0 ? 10 : 7;
+                    g.DrawString(((float)(RangeVertical.Start + i * verticalRangeStep)).ToString(), fontScaleLabel, brush, (float)(pad.Bottom + i * verticalStep - labelPadding), pad.Left - 15);
                 }
             }
         }
@@ -153,6 +185,8 @@ namespace Powell
         {
             using (Graphics g = Graphics.FromImage(img))
             {
+                g.Clear(Color.White);
+
                 // pixel size definition
                 double w = 1.0 * (img.Width - pad.Left - pad.Right) / Points;
                 double h = 1.0 * (img.Height - pad.Top - pad.Bottom) / Points;
@@ -192,13 +226,13 @@ namespace Powell
                     for (int y = 0; y < Points; y++)
                     {
                         SolidBrush brush = new SolidBrush(HeatMap(values[x, y], min, max));
-                        g.FillRectangle(brush, (float)(pad.Left + x * w), (float)(y * h - pad.Bottom), (float)w, (float)h);
+                        g.FillRectangle(brush, (float)(pad.Left + x * w), (float)(pad.Top + y * h), (float)w, (float)h);
                     }
                 }
 
                 if (isolines)
                 {
-                    int steps = 9;
+                    int steps = IsolineCount;
                     double step = (max - min) / steps;
 
                     for (int i = 1; i <= steps; i++)
@@ -216,8 +250,6 @@ namespace Powell
                                 if (values[x, y] < margin)
                                 {
                                     matrix[x, y] = 1;
-                                    // debug
-                                    //g.FillEllipse(new SolidBrush(Color.Black), (float)(pad.Left + x * w), (float)(y * h - pad.Bottom), 3, 3);
                                 }
                             }
                         }
@@ -233,53 +265,25 @@ namespace Powell
                                     {
                                         if ((x != ix && y != iy) && matrix[x,y] == 1 && matrix[ix, iy] == 0)
                                         {
-                                            g.FillEllipse(new SolidBrush(Color.Black), (float)(pad.Left + x * w), (float)(y * h - pad.Bottom), 2, 2);
+                                            g.FillEllipse(new SolidBrush(Color.Black), (float)(pad.Left + x * w), (float)(pad.Top + y * h), 2, 2);
                                             stop = true;
                                         }
                                     }
                                 }
                             }
                         }
-
-                        // TODO: finding and drawing the border
-
-                        //// find border values (== has at least one neighboring 0)
-                        //for (int x = 0; x < Points; x++)
-                        //    for (int y = 0; y < Points; y++)
-                        //    {
-                        //        bool stop = false;
-                        //        for (i = -1; !stop && i <= 1; i++)
-                        //            for (int j = -1; !stop && j <= 1; j++)
-                        //            {
-                        //                bool notCenter = !(i == 0 && i == j);
-                        //                bool xWithinRange = x + i >= 0 && x + i < Points;
-                        //                bool yWithinRange = y + j >= 0 && y + j < Points;
-                        //                if (notCenter && xWithinRange && yWithinRange && matrix[x + i, y + j] == 0)
-                        //                {
-                        //                    matrix[x, y] = 2;
-                        //                    g.DrawEllipse(Pens.Black, (float)(pad.Left + x * w), (float)(y * h - pad.Bottom), 3, 3);
-                        //                }
-                        //            }
-                        //    }
-
-                        //for (int x = 0; x < Points; x++)
-                        //    for (int y = 0; y < Points; y++)
-                        //    {
-                        //        bool found = false;
-
-                        //        if (matrix[x,y] == 2)
-                        //        {
-                        //            found = true;
-
-                        //        }
-                        //    }
                     }
                 }
-                
-
             }
         }
 
+        /// <summary>
+        /// Transforms value between min and max to a color.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="min"></param>
+        /// <param name="max"></param>
+        /// <returns></returns>
         private Color HeatMap(double value, double min, double max)
         {
             double val = (value - min) / (max - min);

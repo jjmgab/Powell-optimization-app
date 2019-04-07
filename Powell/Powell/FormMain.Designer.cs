@@ -34,9 +34,10 @@
             // 
             // pictureBoxGraph
             // 
+            this.pictureBoxGraph.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.pictureBoxGraph.Location = new System.Drawing.Point(12, 12);
             this.pictureBoxGraph.Name = "pictureBoxGraph";
-            this.pictureBoxGraph.Size = new System.Drawing.Size(396, 404);
+            this.pictureBoxGraph.Size = new System.Drawing.Size(496, 404);
             this.pictureBoxGraph.TabIndex = 0;
             this.pictureBoxGraph.TabStop = false;
             // 
@@ -44,7 +45,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(421, 427);
+            this.ClientSize = new System.Drawing.Size(520, 427);
             this.Controls.Add(this.pictureBoxGraph);
             this.Name = "FormMain";
             this.Text = "Form1";

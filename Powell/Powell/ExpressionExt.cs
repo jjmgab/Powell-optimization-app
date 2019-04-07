@@ -12,9 +12,21 @@ namespace Powell
     /// </summary>
     public class ExpressionExt
     {
+        /// <summary>
+        /// List of arguments, starting with x1.
+        /// </summary>
         private Argument[] Arguments { get; set; }
+        
+        /// <summary>
+        /// Algebraic expression.
+        /// </summary>
         private Expression AlgebraicExpression { get; }
 
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        /// <param name="function"></param>
+        /// <param name="args"></param>
         public ExpressionExt(string function, int args)
         {
             // initialize arguments
@@ -28,6 +40,13 @@ namespace Powell
             AlgebraicExpression = new Expression(function, Arguments);
         }
 
+        /// <summary>
+        /// Evaluate expression, substituting provided values.
+        /// The number of values equal to the number of arguments is used.
+        /// When too few values is provided, the rest is substituted with 0.
+        /// </summary>
+        /// <param name="values"></param>
+        /// <returns></returns>
         public double Evaluate(params double[] values)
         {
             for (int i = 0; i < Math.Min(values.Count(), Arguments.Count()); i++)
