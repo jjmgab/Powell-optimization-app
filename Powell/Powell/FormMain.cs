@@ -25,16 +25,12 @@ namespace Powell
             // (x1-2)^2 + (x2-2)^2
             // -------------------------------------
 
-            ExpressionExt expression = new ExpressionExt("(x1-2)^2 + (x2-2)^2", 2);
-            GraphRenderer renderer = new GraphRenderer(pictureBoxGraph, expression);
-            renderer.RangeHorizontal = new GraphRenderer.Range(-4, 4);
-            renderer.RangeVertical = new GraphRenderer.Range(-4, 4);
-            renderer.IsolineCount = 10;
-            renderer.Render(true);
-            renderer.DrawPoints(new PointF[] {
-                new PointF(-1f, -0.73f),
-                new PointF(-2.53f, 3.89f),
-                new PointF(1.5f, 2.2f) });
+            Solver solver = new Solver(2, "(x1-2)^2 + (x2-2)^2");
+            solver.FindOptimalPoint(new float[] { 1.35f, -0.74f });
+            solver.VisualizeResults(
+                pictureBoxGraph,
+                new Range(-2.0f, 6.0f),
+                new Range(-2.0f, 6.0f));
         }
     }
 }

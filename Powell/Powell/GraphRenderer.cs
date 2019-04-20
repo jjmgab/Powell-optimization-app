@@ -40,7 +40,7 @@ namespace Powell
         /// <summary>
         /// Target PictureBox, on which the graph will be rendered.
         /// </summary>
-        private System.Windows.Forms.PictureBox TargetPictureBox { get; }
+        private PictureBox TargetPictureBox { get; }
 
         /// <summary>
         /// Defines properties of axes of the graph.
@@ -53,33 +53,6 @@ namespace Powell
         private ExpressionExt AlgebraicExpression { get; }
 
         private Padding pad = new Padding(20, 0, 0, 20);
-
-        /// <summary>
-        /// Defines range.
-        /// </summary>
-        public class Range
-        {
-            /// <summary>
-            /// Starting value of the range.
-            /// </summary>
-            public double Start { get; }
-
-            /// <summary>
-            /// Final value of the range.
-            /// </summary>
-            public double End { get; }
-
-            /// <summary>
-            /// Constructor.
-            /// </summary>
-            /// <param name="start"></param>
-            /// <param name="end"></param>
-            public Range(double start, double end)
-            {
-                Start = start;
-                End = end;
-            }
-        }
 
         /// <summary>
         /// Constructor. Initializes all starting parameters.
@@ -297,6 +270,9 @@ namespace Powell
         /// <param name="points"></param>
         public void DrawPoints(PointF[] points)
         {
+            if (points.Count() < 1)
+                return;
+
             Image image = TargetPictureBox.Image;
 
             using (Graphics g = Graphics.FromImage(image))
