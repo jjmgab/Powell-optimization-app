@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 
 namespace Powell
@@ -50,6 +51,8 @@ namespace Powell
         /// Expression that gets rendered.
         /// </summary>
         private ExpressionExt AlgebraicExpression { get; }
+
+        private Padding pad = new Padding(20, 0, 0, 20);
 
         /// <summary>
         /// Defines range.
@@ -111,8 +114,6 @@ namespace Powell
         /// </summary>
         public void Render(bool drawIsolines)
         {
-            Padding pad = new Padding(20, 0, 0, 20);
-
             DrawSurface(TargetPictureBox.Image, pad, drawIsolines);
             DrawAxis(TargetPictureBox.Image, pad, 5);
             
@@ -288,6 +289,42 @@ namespace Powell
         {
             double val = (value - min) / (max - min);
             return Color.FromArgb(255, Convert.ToByte(255 * val), Convert.ToByte(255 * (1 - val)), 0);
+        }
+
+        /// <summary>
+        /// Draws given points as a linked path.
+        /// </summary>
+        /// <param name="points"></param>
+        public void DrawPoints(PointF[] points)
+        {
+            Image image = TargetPictureBox.Image;
+
+            using (Graphics g = Graphics.FromImage(image))
+            {
+                Pen penPath = new Pen(Color.Cornsilk, 2);
+                Pen penPoint = new Pen(Color.Black, 2);
+
+                // transform from function coord system to image coord system
+                // (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+                // since y-coord is measured top-down, the range in_max/in_min has to be swapped
+
+                PointF[] pointsTransformed = points.Select(p => new PointF(
+                    (p.X - (float)RangeHorizontal.Start) * (image.Width - pad.Right - pad.Left) / (float)(RangeHorizontal.End - RangeHorizontal.Start) + pad.Left,
+                    (p.Y - (float)RangeVertical.End) * (image.Height - pad.Top - pad.Bottom) / (float)(RangeVertical.Start - RangeVertical.End) + pad.Top
+                    )).ToArray();
+
+                // drawing path
+                GraphicsPath graphicsPath = new GraphicsPath();
+                graphicsPath.AddLines(pointsTransformed); 
+                g.DrawPath(penPath, graphicsPath);
+
+                // drawing points
+                float pointRadius = 1f;
+                foreach (PointF point in pointsTransformed)
+                {
+                    g.DrawEllipse(penPoint, point.X - pointRadius, point.Y - pointRadius, 2 * pointRadius, 2 * pointRadius);
+                }
+            }
         }
     }
 }
