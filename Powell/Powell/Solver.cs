@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Powell
@@ -31,6 +29,44 @@ namespace Powell
         public int Dimension { get; }
 
         /// <summary>
+        /// Class defining restrictions for the algorithm.
+        /// </summary>
+        public class Restrictions
+        {
+            /// <summary>
+            /// The number of iterations.
+            /// </summary>
+            public int NumberOfIterations { get; }
+
+            /// <summary>
+            /// The least permitted argument difference.
+            /// </summary>
+            public float ArgumentDifferenceError { get; }
+
+            /// <summary>
+            /// The least permitted function value difference.
+            /// </summary>
+            public float FunctionValueDifferenceError { get; }
+
+            /// <summary>
+            /// Constructor.
+            /// </summary>
+            /// <param name="numberOfIters">The number of iterations.</param>
+            /// <param name="argDiffError">The least permitted argument difference.</param>
+            /// <param name="funValDiffError">The least permitted function value difference.</param>
+            public Restrictions(int numberOfIters, float argDiffError, float funValDiffError)
+            {
+                // number of iterations must be at least 1.
+                if (numberOfIters < 1)
+                    throw new ArgumentOutOfRangeException("NumberOfIterations", numberOfIters, "Number of iterations must be larger than 0.");
+
+                NumberOfIterations = numberOfIters;
+                ArgumentDifferenceError = Math.Abs(argDiffError);
+                FunctionValueDifferenceError = Math.Abs(funValDiffError);
+            }
+        }
+
+        /// <summary>
         /// Constructor.
         /// </summary>
         /// <param name="dimension">Dimension of the considered problem</param>
@@ -44,12 +80,26 @@ namespace Powell
             Expression = new ExpressionExt(function, dimension);
         }
 
-        public bool FindOptimalPoint(float[] startingPoint) // all parameters such as ending conditions should be stated here
+        /// <summary>
+        /// Finds the optimal point (the minimum) of the expression using Powell method, given the starting point.
+        /// </summary>
+        /// <param name="startingPoint">the starting point</param>
+        /// <param name="restrictions">restrictions for the algorithm</param>
+        /// <returns>true when optimum found, false otherwise</returns>
+        public bool FindOptimalPoint(float[] startingPoint, Restrictions restrictions)
         {
+            // in case the method is recalled, the Steps list must be empty initially
+            steps.Clear();
+
+            // check the starting point correctness
+            if (!IsPointPropertiesCorrect(startingPoint))
+                throw new ArgumentOutOfRangeException("startingPoint.Count", startingPoint.Count(), "Starting point dimension is invalid.");
+
             // first point of the algorithm
             steps.Add(startingPoint);
 
             // implementation goes here
+            throw new NotImplementedException("The algorithm is not implemented yet!");
 
             return true;
         }
@@ -62,14 +112,18 @@ namespace Powell
         /// <param name="rangeVertical"></param>
         public void VisualizeResults(PictureBox target, Range rangeHorizontal, Range rangeVertical)
         {
+            // the visualization is possible only for dim = 2
             if (Dimension == 2)
             {
+                // create an instance of graph renderer
                 GraphRenderer renderer = new GraphRenderer(target, Expression)
                 {
                     RangeHorizontal = rangeHorizontal,
                     RangeVertical = rangeVertical,
                     IsolineCount = 10
                 };
+
+                // render the graph with isolines
                 renderer.Render(true);
 
                 // transform List<float[]> into PointF[] for 2D problem
@@ -77,6 +131,16 @@ namespace Powell
             }
             else
                 MessageBox.Show("Wizualizacja jest możliwa jedynie dla problemów 2-wymiarowych.", "Błąd wizualizacji", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+
+        /// <summary>
+        /// Verifies if the point is correct in terms of algorithm parameters.
+        /// </summary>
+        /// <param name="point"></param>
+        /// <returns></returns>
+        private bool IsPointPropertiesCorrect(float[] point)
+        {
+            return point.Count() == Dimension;
         }
     }
 }
