@@ -80,6 +80,42 @@ namespace Powell
             Expression = new ExpressionExt(function, dimension);
         }
 
+        private float GoldenRatio(float[] _startingPoint,int _direction)
+        {
+            float[] Point = _startingPoint;
+            int direction = _direction;
+            float a = -1000;
+            float b = 1000;
+            float tau = 0.618f;
+            float alpha1 = a + (1 - tau) * (b - a);
+            float alpha2 = a + (tau * (b - a));
+            Point[direction] = alpha1;
+            var fAlpha1 = Expression.Evaluate(Point);
+            Point[direction] = alpha2;
+            var fAlpha2 = Expression.Evaluate(Point);
+
+            while (!(b - a < 0.001f))
+            {
+                if (fAlpha1 > fAlpha2)
+                {
+                    a = alpha1;
+                    alpha1 = alpha2;
+                    alpha2 = a + tau * (b - a);
+                    Point[direction] = alpha2;
+                    fAlpha2 = Expression.Evaluate(Point);
+                }
+                else
+                {
+                    b = alpha2;
+                    alpha2 = alpha1;
+                    alpha1 = a + (1 - tau) * (b - a);
+                    Point[direction] = alpha1;
+                    fAlpha1 = Expression.Evaluate(Point);
+                }
+            }
+            return (a + b) / 2;
+        }
+        
         /// <summary>
         /// Finds the optimal point (the minimum) of the expression using Powell method, given the starting point.
         /// </summary>
@@ -98,9 +134,22 @@ namespace Powell
             // first point of the algorithm
             steps.Add(startingPoint);
 
+            double ExpressionValue = Expression.Evaluate(startingPoint);
+
             // implementation goes here
             throw new NotImplementedException("The algorithm is not implemented yet!");
 
+            float[] Point = startingPoint;
+            while (!(ExpressionValue < 0.001))
+            {
+
+                for(int i = 0; i < Dimension; i++)
+                {
+                    Point[i] = GoldenRatio(steps.Last(), i);
+                }
+                ExpressionValue = Expression.Evaluate(Point);
+                steps.Add(Point);
+            }
             return true;
         }
 
