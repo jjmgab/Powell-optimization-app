@@ -47,7 +47,7 @@ namespace Powell
         /// </summary>
         /// <param name="values"></param>
         /// <returns></returns>
-        public double Evaluate(params double[] values)
+        public float Evaluate(params float[] values)
         {
             for (int i = 0; i < Math.Min(values.Count(), Arguments.Count()); i++)
             {
@@ -58,7 +58,7 @@ namespace Powell
             {
                 Arguments[i].setArgumentValue(0.0);
             }
-            return AlgebraicExpression.calculate();
+            return (float) AlgebraicExpression.calculate();
         }
     }
 }

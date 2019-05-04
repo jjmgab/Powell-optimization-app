@@ -60,7 +60,7 @@ namespace Powell
         /// <param name="target"></param>
         /// <param name="rangeH"></param>
         /// <param name="rangeV"></param>
-        public GraphRenderer(System.Windows.Forms.PictureBox target, ExpressionExt expression, Range rangeH, Range rangeV)
+        public GraphRenderer(PictureBox target, ExpressionExt expression, Range rangeH, Range rangeV)
         {
             TargetPictureBox = target;
             RangeHorizontal = rangeH;
@@ -78,7 +78,7 @@ namespace Powell
         /// </summary>
         /// <param name="target"></param>
         /// <param name="expression"></param>
-        public GraphRenderer(System.Windows.Forms.PictureBox target, ExpressionExt expression)
+        public GraphRenderer(PictureBox target, ExpressionExt expression)
         : this(target, expression, new Range(-5, 5), new Range(-5, 5)) { }
 
 
@@ -116,25 +116,25 @@ namespace Powell
                 g.DrawString("x2", fontAxisLabel, brush, 0, 5);
 
                 // draw axis scale and values
-                double horizontalStep = (double)(img.Width - pad.Left - pad.Right) / scalePads;
-                double verticalStep = (double)(img.Height - pad.Top - pad.Bottom) / scalePads;
-                double horizontalRangeStep = (RangeHorizontal.End - RangeHorizontal.Start) / scalePads;
-                double verticalRangeStep = (RangeVertical.End - RangeVertical.Start) / scalePads;
+                float horizontalStep = (float)(img.Width - pad.Left - pad.Right) / scalePads;
+                float verticalStep = (float)(img.Height - pad.Top - pad.Bottom) / scalePads;
+                float horizontalRangeStep = (float)(RangeHorizontal.End - RangeHorizontal.Start) / scalePads;
+                float verticalRangeStep = (float)(RangeVertical.End - RangeVertical.Start) / scalePads;
 
                 // drawing lines on horizontal axis
                 for (int i = 0; i <= scalePads; i++)
-                    g.DrawLine(pen, (float)(pad.Left + i * horizontalStep), img.Height - pad.Bottom, (float)(pad.Left + i * horizontalStep), img.Height - pad.Bottom + 3);
+                    g.DrawLine(pen, pad.Left + i * horizontalStep, img.Height - pad.Bottom, pad.Left + i * horizontalStep, img.Height - pad.Bottom + 3);
                 
                 // drawing values
                 for (int i = 0; i < scalePads; i++)
                 {
                     int labelPadding = (RangeHorizontal.Start + i * horizontalRangeStep) < 0 ? 10 : 7;
-                    g.DrawString(((float)(RangeHorizontal.Start + i * horizontalRangeStep)).ToString(), fontScaleLabel, brush, (float)(pad.Left + i * horizontalStep - labelPadding), img.Height - pad.Bottom + 3);
+                    g.DrawString(((float)(RangeHorizontal.Start + i * horizontalRangeStep)).ToString(), fontScaleLabel, brush, pad.Left + i * horizontalStep - labelPadding, img.Height - pad.Bottom + 3);
                 }
 
                 // drawing lines on vertical axis
                 for (int i = 0; i <= scalePads; i++)
-                    g.DrawLine(pen, pad.Left, (float)(img.Height - pad.Bottom - i * verticalStep), pad.Left -3, (float)(img.Height - pad.Bottom - i * verticalStep));
+                    g.DrawLine(pen, pad.Left, img.Height - pad.Bottom - i * verticalStep, pad.Left -3, img.Height - pad.Bottom - i * verticalStep);
                 
                 // applying transformation, in order to draw rotated text
                 g.RotateTransform(-90);
@@ -144,7 +144,7 @@ namespace Powell
                 for (int i = 0; i < scalePads; i++)
                 {
                     int labelPadding = (RangeVertical.Start + i * verticalRangeStep) < 0 ? 10 : 7;
-                    g.DrawString(((float)(RangeVertical.Start + i * verticalRangeStep)).ToString(), fontScaleLabel, brush, (float)(pad.Bottom + i * verticalStep - labelPadding), pad.Left - 15);
+                    g.DrawString(((float)(RangeVertical.Start + i * verticalRangeStep)).ToString(), fontScaleLabel, brush, pad.Bottom + i * verticalStep - labelPadding, pad.Left - 15);
                 }
             }
         }
@@ -162,25 +162,25 @@ namespace Powell
                 g.Clear(Color.White);
 
                 // pixel size definition
-                double w = 1.0 * (img.Width - pad.Left - pad.Right) / Points;
-                double h = 1.0 * (img.Height - pad.Top - pad.Bottom) / Points;
+                float w = 1.0f * (img.Width - pad.Left - pad.Right) / Points;
+                float h = 1.0f * (img.Height - pad.Top - pad.Bottom) / Points;
 
                 // value multiplier, used in expression evaluation
-                double mulX = (RangeHorizontal.End - RangeHorizontal.Start) / Points;
-                double mulY = (RangeVertical.End - RangeVertical.Start) / Points;
+                float mulX = (float)(RangeHorizontal.End - RangeHorizontal.Start) / Points;
+                float mulY = (float)(RangeVertical.End - RangeVertical.Start) / Points;
 
                 // value matrix
-                double[,] values = new double[Points, Points];
+                float[,] values = new float[Points, Points];
 
                 // max and min values are used in both heatmap and isolines generation
-                double max = 0, min = 0;
+                float max = 0, min = 0;
 
                 // fill the value matrix
                 for (int x = 0; x < Points; x++)
                 {
                     for (int y = 0; y < Points; y++)
                     {
-                        values[x, y] = AlgebraicExpression.Evaluate(RangeHorizontal.Start + x * mulX, RangeVertical.Start + y * mulY);
+                        values[x, y] = AlgebraicExpression.Evaluate((float)RangeHorizontal.Start + x * mulX, (float)RangeVertical.Start + y * mulY);
 
                         if (x == 0 && y == 0)
                         {
@@ -200,21 +200,21 @@ namespace Powell
                     for (int y = 0; y < Points; y++)
                     {
                         SolidBrush brush = new SolidBrush(HeatMap(values[x, y], min, max));
-                        g.FillRectangle(brush, (float)(pad.Left + x * w), (float)(pad.Top + y * h), (float)w, (float)h);
+                        g.FillRectangle(brush, pad.Left + x * w, pad.Top + y * h, w, h);
                     }
                 }
 
                 if (isolines)
                 {
                     int steps = IsolineCount;
-                    double step = (max - min) / steps;
+                    float step = (max - min) / steps;
 
                     for (int i = 1; i <= steps; i++)
                     {
                         // target list of points, containing the border
                         List<PointF> listOfPoints = new List<PointF>();
                         byte[,] matrix = new byte[Points, Points];
-                        double margin = min + i * step;
+                        float margin = min + i * step;
 
                         // find all values that satisfy the marginal condition
                         for (int x = 0; x < Points; x++)
@@ -239,7 +239,7 @@ namespace Powell
                                     {
                                         if ((x != ix && y != iy) && matrix[x,y] == 1 && matrix[ix, iy] == 0)
                                         {
-                                            g.FillEllipse(new SolidBrush(Color.Black), (float)(pad.Left + x * w), (float)(pad.Top + y * h), 2, 2);
+                                            g.FillEllipse(new SolidBrush(Color.Black), pad.Left + x * w, pad.Top + y * h, 2, 2);
                                             stop = true;
                                         }
                                     }
@@ -258,9 +258,9 @@ namespace Powell
         /// <param name="min"></param>
         /// <param name="max"></param>
         /// <returns></returns>
-        private Color HeatMap(double value, double min, double max)
+        private Color HeatMap(float value, float min, float max)
         {
-            double val = (value - min) / (max - min);
+            float val = (value - min) / (max - min);
             return Color.FromArgb(255, Convert.ToByte(255 * val), Convert.ToByte(255 * (1 - val)), 0);
         }
 
