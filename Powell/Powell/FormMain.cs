@@ -17,17 +17,19 @@ namespace Powell
             // (x1-2)^2 + (x2-2)^2
             // -------------------------------------
 
+            //Debug.DebugOn();
+
             // problem dimension
             const int dim = 2;
 
             // starting point
-            float[] startingPoint = new float[dim] { 1.35f, -0.74f };
+            float[] startingPoint = new float[dim] { -2.1f, -0.4f };
 
             // algorithm restrictions
-            Solver.Restrictions restrictions = new Solver.Restrictions(10, 0.001f, 0.001f);
+            Solver.Restrictions restrictions = new Solver.Restrictions(100, 0.0001f, 0.0001f);
 
             // solver instance
-            Solver solver = new Solver(dim, "(x1-2)^2 + (x2-2)^2");
+            Solver solver = new Solver(dim, "(x1-2.0)^2 + (x2-2.0)^2");
 
             // find optimal point
             if (solver.FindOptimalPoint(startingPoint, restrictions))

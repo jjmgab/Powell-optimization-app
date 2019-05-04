@@ -49,6 +49,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Debug.cs" />
     <Compile Include="ExpressionExt.cs" />
     <Compile Include="FormMain.cs">
       <SubType>Form</SubType>
