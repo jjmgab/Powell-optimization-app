@@ -98,17 +98,61 @@ namespace Powell
         /// Golden Ratio minimization in direction algorithm implementation.
         /// algorithm source: Stachurski, A., "Podstawy optymalizacji"
         /// </summary>
+        /// <param name="leftBound"></param>
+        /// <param name="rightBound"></param>
+        /// <param name="point"></param>
+        /// <param name="index"></param>
+        /// <param name="restrictions"></param>
+        /// <returns></returns>
+        float GoldenRatioMethod(float leftBound, float rightBound, float[] point, int index, Restrictions restrictions)
+        {
+            // golden ratio coefficient
+            float tau = ((float)Math.Sqrt(5) - 1) / 2;
+
+            // left and right inner point
+            float leftInner = rightBound - tau * (rightBound - leftBound);
+            float rightInner = leftBound + tau * (rightBound - leftBound);
+
+            // do until argument difference restriction reached
+            while ((rightBound - leftBound) > restrictions.ArgumentDifferenceError)
+            {
+                // calculate function values at inner points
+                point[index] = leftInner;
+                float leftInnerFunctionValue = Expression.Evaluate(point);
+                point[index] = rightInner;
+                float rightInnerFunctionValue = Expression.Evaluate(point);
+
+                // compare function values at left and right inner point
+                if (leftInnerFunctionValue > rightInnerFunctionValue)
+                {
+                    // minimum is within [left inner point, right bound]
+                    leftBound = leftInner;
+                    leftInner = rightInner;
+                    rightInner = leftBound + tau * (rightBound - leftBound);
+                }
+                else
+                {
+                    // minimum is within [left bound, right inner point]
+                    rightBound = rightInner;
+                    rightInner = leftInner;
+                    leftInner = rightBound - tau * (rightBound - leftBound);
+                }
+            }
+
+            // estimated minimum is between left and right bound
+            return (leftBound + rightBound) / 2;
+        }
+
+        /// <summary>
+        /// Minimization in direction using the Golden Ratio method.
+        /// </summary>
         /// <param name="point"></param>
         /// <param name="direction"></param>
         /// <param name="argumentDiffMin"></param>
         /// <param name="argumentDiffExceeded"></param>
         /// <returns></returns>
-        private float[] MinimizeInDirection(float[] point, float[] direction, Restrictions restrictions, out bool argumentDiffExceeded)
+        private float[] MinimizeInDirection(float[] point, float[] direction, Restrictions restrictions)
         {
-            // TODO: argumentDiffMin -> check the maximum difference between points
-
-            Console.WriteLine("direction: {0}", GeneratePointString(direction));
-
             // considered problem dimension
             int dim = point.Count();
 
@@ -125,105 +169,14 @@ namespace Powell
                 }
             }
 
-            // initial range [a, b]
-            float[] leftBound = new float[dim];
-            float[] rightBound = new float[dim];
-
-            for (int i = 0; i < dim; i++)
-            {
-                leftBound[i] = point[i];
-                rightBound[i] = point[i];
-                if (directionFlag[i])
-                {
-                    leftBound[i] -= 10.0f;
-                    rightBound[i] += 10.0f;
-                }
-            }
-
-            if (Debug.IsDebugOn)
-            {
-                ShowPointInfo(leftBound, "init leftBound");
-                ShowPointInfo(rightBound, "init rightBound");
-            }
-
-            // golden ratio coefficient
-            float tau = 0.618f;
-
-            // inner points, within the [a,b] range
-            // boundary points are assigned to include non-modified elements of the array
-            float[] leftInner = new float[dim];
-            float[] rightInner = new float[dim];
-
-            leftBound.CopyTo(leftInner, 0);
-            rightBound.CopyTo(rightInner, 0);
-
-            // ai = a + (1 - tau)(b - a)
-            // bi = a + tau(b - a)
             for (int i = 0; i < dim; i++)
             {
                 if (directionFlag[i])
                 {
-                    leftInner[i] = leftBound[i] + (1 - tau) * (rightBound[i] - leftBound[i]);
-                    rightInner[i] = leftBound[i] + tau * (rightBound[i] - leftBound[i]);
+                    // TODO: how to determine a sufficient range??
+                    targetPoint[i] = GoldenRatioMethod(point[i] - 5f, point[i] + 5f, point, i, restrictions);
                 }
             }
-
-            if (Debug.IsDebugOn)
-            {
-                ShowPointInfo(leftBound, "leftBound");
-                ShowPointInfo(rightBound, "rightBound");
-                ShowPointInfo(leftInner, "leftInner");
-                ShowPointInfo(rightInner, "rightInner");
-            }
-
-            float leftInnerValue = Expression.Evaluate(leftInner);
-            float rightInnerValue = Expression.Evaluate(rightInner);
-            int loopIndex = 0;
-
-            while (loopIndex < restrictions.NumberOfIterations  )
-                //&& Math.Abs(rightInnerValue - leftInnerValue) > restrictions.FunctionValueDifferenceError)
-            {
-                if (Debug.IsDebugOn)
-                    Console.WriteLine(loopIndex.ToString());
-                if (leftInnerValue > rightInnerValue)
-                {
-                    leftInner.CopyTo(leftBound, 0);
-                    rightInner.CopyTo(leftInner, 0);
-
-                    for (int i = 0; i < dim; i++)
-                    {
-                        if (directionFlag[i])
-                        {
-                            rightInner[i] = leftBound[i] + tau * (rightBound[i] - leftBound[i]);
-                        }
-                    }
-                    rightInnerValue = Expression.Evaluate(rightInner);
-                }
-                else
-                {
-                    rightInner.CopyTo(rightBound, 0);
-                    leftInner.CopyTo(rightInner, 0);
-
-                    for (int i = 0; i < dim; i++)
-                    {
-                        if (directionFlag[i])
-                        {
-                            leftInner[i] = leftBound[i] + (1 - tau) * (rightBound[i] - leftBound[i]);
-                        }
-                    }
-                    leftInnerValue = Expression.Evaluate(leftInner);
-                }
-                loopIndex++;
-            }
-            for (int i = 0; i < dim; i++)
-            {
-                if (directionFlag[i])
-                {
-                    targetPoint[i] = (rightBound[i] + leftBound[i]) / 2;
-                }
-            }
-
-            argumentDiffExceeded = false;
             return targetPoint;
         }
 
@@ -250,7 +203,7 @@ namespace Powell
             startingPoint.CopyTo(point, 0);
 
             if (Debug.IsDebugOn)
-                ShowPointInfo(point, "punkt poczatkowy");
+                PointHelper.ShowPointInfo(Steps.Last(), Expression, "punkt poczatkowy");
 
             while (Steps.Count <= restrictions.NumberOfIterations)
             {
@@ -258,18 +211,15 @@ namespace Powell
                 float previousPointValue = Expression.Evaluate(Steps.Last());
                 float previousValueDifference = 0f;
                 float[] newPoint = new float[startingPoint.Count()];
-                int directionIndex = -1;
-
 
                 // find the direction with maximum function difference
                 for (int i = 0; i < DirectionBase.Count; i++)
                 {
+                    Steps.Last().CopyTo(newPoint, 0);
+                    Steps.Add(MinimizeInDirection(newPoint, DirectionBase[i], restrictions));
 
-                    Steps.Add(MinimizeInDirection(Steps.Last(), DirectionBase[i], restrictions, out bool argDiffExceeded));
-
-                    // if the argument difference is negligible, skip the point
-                    if (argDiffExceeded)
-                        continue;
+                    if (Debug.IsDebugOn)
+                        PointHelper.ShowPointInfo(Steps.Last(), Expression, "punkt");
 
                     float temporaryPointValue = Expression.Evaluate(Steps.Last());
                     float temporaryValueDifference = Math.Abs(temporaryPointValue - previousPointValue);
@@ -277,63 +227,16 @@ namespace Powell
                     currentPointValue = temporaryPointValue;
                     previousValueDifference = temporaryValueDifference;
 
+                    // TODO: check for argument difference here!
+
                     // if the difference between last two function values is less than the restriction, end the algorithm
                     if (Math.Abs(currentPointValue - previousPointValue) < restrictions.FunctionValueDifferenceError)
                     {
-                        Console.WriteLine("the difference between last two function values is less than the restriction");
+                        if (Debug.IsDebugOn)
+                            Console.WriteLine("the difference between last two function values is less than the restriction");
                         return true;
                     }
-                }
-
-
-                //// find the direction with maximum function difference
-                //for (int i = 0; i < DirectionBase.Count; i++)
-                //{
-                //    float[] temporaryPoint = MinimizeInDirection(point, DirectionBase[i], restrictions, out bool argDiffExceeded);
-                //    Console.WriteLine(string.Format("point: {0}, temp: {1}", GeneratePointString(point), GeneratePointString(temporaryPoint)));
-                //    if (Debug.IsDebugOn)
-                //        ShowPointInfo(temporaryPoint, "punkt " + i.ToString());
-
-                //    // if the argument difference is negligible, skip the point
-                //    if (argDiffExceeded)
-                //        continue;
-
-                //    float temporaryPointValue = Expression.Evaluate(temporaryPoint);
-                //    float temporaryValueDifference = Math.Abs(temporaryPointValue - previousPointValue);
-
-                //    Console.WriteLine(string.Format("i={0}, temp val: {1}, prev val: {2}, steps: {3}, temp: {4}", i, temporaryPointValue, previousPointValue, Steps.Count, GeneratePointString(temporaryPoint)));
-
-                //    // check for the largest value difference
-                //    if (temporaryValueDifference > previousValueDifference)
-                //    {
-                //        currentPointValue = temporaryPointValue;
-                //        previousValueDifference = temporaryValueDifference;
-                //        directionIndex = i;
-                //        temporaryPoint.CopyTo(newPoint, 0);
-                //    }
-                //}
-
-                //// if no direction can provide a significant value change, end the algorithm
-                //if (directionIndex == -1)
-                //{
-                //    Console.WriteLine("no direction can provide a significant value change");
-                //    return true;
-                //}
-                //else
-                //{
-                //    // get found point
-                //    newPoint.CopyTo(point, 0);
-
-                //    // add the point
-                //    steps.Add(point);
-
-                //    // if the difference between last two function values is less than the restriction, end the algorithm
-                //    if (Math.Abs(currentPointValue - previousPointValue) < restrictions.FunctionValueDifferenceError)
-                //    {
-                //        Console.WriteLine("the difference between last two function values is less than the restriction");
-                //        return true;
-                //    }
-                //}  
+                }  
             }
             return true;
         }
@@ -375,16 +278,6 @@ namespace Powell
         private bool IsPointPropertiesCorrect(float[] point)
         {
             return point.Count() == Dimension;
-        }
-
-        private string GeneratePointString(float[] point)
-        {
-            return string.Format("[{0}]", string.Join(", ", point));
-        }
-
-        private void ShowPointInfo(float[] point, string additionalInfo = "")
-        {
-            MessageBox.Show(additionalInfo + "\r\n" + GeneratePointString(point), "Point info", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
     }
 }
