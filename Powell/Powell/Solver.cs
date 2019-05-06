@@ -95,7 +95,7 @@ namespace Powell
         }
 
         /// <summary>
-        /// Golden Ratio minimization in direction algorithm implementation.
+        /// Golden section search minimization in direction algorithm implementation.
         /// algorithm source: Stachurski, A., "Podstawy optymalizacji"
         /// </summary>
         /// <param name="leftBound"></param>
@@ -104,7 +104,7 @@ namespace Powell
         /// <param name="index"></param>
         /// <param name="restrictions"></param>
         /// <returns></returns>
-        float GoldenRatioMethod(float leftBound, float rightBound, float[] point, int index, Restrictions restrictions)
+        float GoldenSectionMethod(float leftBound, float rightBound, float[] point, int index, Restrictions restrictions)
         {
             // golden ratio coefficient
             float tau = ((float)Math.Sqrt(5) - 1) / 2;
@@ -144,7 +144,7 @@ namespace Powell
         }
 
         /// <summary>
-        /// Minimization in direction using the Golden Ratio method.
+        /// Minimization in direction using the golden section search method.
         /// </summary>
         /// <param name="point"></param>
         /// <param name="direction"></param>
@@ -174,7 +174,7 @@ namespace Powell
                 if (directionFlag[i])
                 {
                     // TODO: how to determine a sufficient range??
-                    targetPoint[i] = GoldenRatioMethod(point[i] - 5f, point[i] + 5f, point, i, restrictions);
+                    targetPoint[i] = GoldenSectionMethod(point[i] - 5f, point[i] + 5f, point, i, restrictions);
                 }
             }
             return targetPoint;
