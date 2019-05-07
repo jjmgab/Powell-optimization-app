@@ -15,6 +15,9 @@ namespace Powell
             // (sin(x1)^2 + cos(x2)^2) / (5 + x1^2 + x2^2)
             // x1^4 + x2^4 - 2*x1^2*x2 - 4*x1 + 3
             // (x1-2)^2 + (x2-2)^2
+            // (x1^2+x2-11)^2+(x1+x2^2-7)^2-200
+            // (1+(x1+x2+1)^2*(19-14*x1+3*x1^2-14*x2+6*x1*x2+3*x2^2))*(30+(2*x1-3*x2)^2*(18-32*x1+12*x1^2+48*x2-36*x1*x2+27*x2^2))
+            // x1^4+x2^4-0.62*x1^2-0.62*x2^2
             // -------------------------------------
 
             Debug.DebugOn();
@@ -23,13 +26,13 @@ namespace Powell
             const int dim = 2;
 
             // starting point
-            float[] startingPoint = new float[dim] { -5f, -2f };
+            float[] startingPoint = new float[dim] { 3.5f, 3.5f };
 
             // algorithm restrictions
             Solver.Restrictions restrictions = new Solver.Restrictions(100, 0.001f, 0.001f);
 
             // solver instance
-            Solver solver = new Solver(dim, "x1^4 + x2^4 - 2*x1^2*x2 - 4*x1 + 3");
+            Solver solver = new Solver(dim, "x1^4+x2^4-0.62*x1^2-0.62*x2^2");
 
             // find optimal point
             if (solver.FindOptimalPoint(startingPoint, restrictions))
@@ -37,8 +40,8 @@ namespace Powell
                 // visualize results if dim = 2
                 solver.VisualizeResults(
                     pictureBoxGraph,
-                    new Range(-6.0f, 6.0f),
-                    new Range(-6.0f, 6.0f));
+                    new Range(-6f, 6f),
+                    new Range(-6f, 6f));
 
                 // print optimum in messagebox
                 string optimum = string.Format("[{0}]", string.Join(", ", solver.Steps.Last()));

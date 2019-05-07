@@ -200,7 +200,7 @@ namespace Powell
                     for (int y = 0; y < Points; y++)
                     {
                         SolidBrush brush = new SolidBrush(HeatMap(values[x, y], min, max));
-                        g.FillRectangle(brush, pad.Left + x * w, pad.Top + y * h, w, h);
+                        g.FillRectangle(brush, pad.Left + x * w, img.Height - pad.Bottom - y * h, w, h);
                     }
                 }
 
@@ -239,7 +239,7 @@ namespace Powell
                                     {
                                         if ((x != ix && y != iy) && matrix[x,y] == 1 && matrix[ix, iy] == 0)
                                         {
-                                            g.FillEllipse(new SolidBrush(Color.Black), pad.Left + x * w, pad.Top + y * h, 2, 2);
+                                            g.FillEllipse(new SolidBrush(Color.Black), pad.Left + x * w, img.Height - pad.Bottom - y * h, 2, 2);
                                             stop = true;
                                         }
                                     }
@@ -261,7 +261,7 @@ namespace Powell
         private Color HeatMap(float value, float min, float max)
         {
             float val = (value - min) / (max - min);
-            return Color.FromArgb(255, Convert.ToByte(255 * val), Convert.ToByte(255 * (1 - val)), 0);
+            return Color.FromArgb(255, Convert.ToByte(255 * (1 - val)), Convert.ToByte(255 * val), 0);
         }
 
         /// <summary>

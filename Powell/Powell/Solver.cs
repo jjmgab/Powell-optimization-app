@@ -153,10 +153,7 @@ namespace Powell
         /// <returns></returns>
         private float[] MinimizeInDirection(float[] point, float[] direction, Restrictions restrictions)
         {
-            // considered problem dimension
-            int dim = point.Count();
-
-            float[] targetPoint = new float[dim];
+            float[] targetPoint = new float[Dimension];
             point.CopyTo(targetPoint, 0);
 
             // create a flag array, which determines which elements from direction array will be used
@@ -169,12 +166,56 @@ namespace Powell
                 }
             }
 
-            for (int i = 0; i < dim; i++)
+            for (int i = 0; i < Dimension; i++)
             {
                 if (directionFlag[i])
                 {
-                    // TODO: how to determine a sufficient range??
-                    targetPoint[i] = GoldenSectionMethod(point[i] - 5f, point[i] + 5f, point, i, restrictions);
+                    // determining range for the minimum determination
+                    float leftOffset = 0f;
+                    float rightOffset = 0f;
+                    float offsetStep = 0.01f;
+
+                    float startingPointValue = Expression.Evaluate(point);
+
+                    float[] helperPoint = new float[Dimension];
+                    point.CopyTo(helperPoint, 0);
+
+                    // left offset
+                    // first check if the direction is valid
+                    helperPoint[i] -= offsetStep;
+                    if (startingPointValue > Expression.Evaluate(helperPoint))
+                    {
+                        helperPoint[i] = point[i];
+                        float previousValue;
+                        do
+                        {
+                            previousValue = Expression.Evaluate(helperPoint);
+                            helperPoint[i] -= offsetStep;
+                            leftOffset += offsetStep;
+                        }
+                        while (previousValue > Expression.Evaluate(helperPoint));
+                    }
+
+                    // back to the starting point, so the other direction can be verified
+                    helperPoint[i] = point[i];
+
+                    // right offset
+                    // first check if the direction is valid
+                    helperPoint[i] += offsetStep;
+                    if (startingPointValue > Expression.Evaluate(helperPoint))
+                    {
+                        helperPoint[i] -= offsetStep;
+                        float previousValue;
+                        do
+                        {
+                            previousValue = Expression.Evaluate(helperPoint);
+                            helperPoint[i] += offsetStep;
+                            rightOffset += offsetStep;
+                        }
+                        while (previousValue > Expression.Evaluate(helperPoint));
+                    }
+
+                    targetPoint[i] = GoldenSectionMethod(point[i] - leftOffset, point[i] + rightOffset, point, i, restrictions);
                 }
             }
             return targetPoint;
@@ -213,7 +254,7 @@ namespace Powell
                 float[] newPoint = new float[startingPoint.Count()];
 
                 // find the direction with maximum function difference
-                for (int i = 0; i < DirectionBase.Count; i++)
+                for (int i = 0; i < Dimension; i++)
                 {
                     Steps.Last().CopyTo(newPoint, 0);
                     Steps.Add(MinimizeInDirection(newPoint, DirectionBase[i], restrictions));
@@ -227,16 +268,50 @@ namespace Powell
                     currentPointValue = temporaryPointValue;
                     previousValueDifference = temporaryValueDifference;
 
-                    // TODO: check for argument difference here!
+                    // CONDITION: checking for argument difference
+                    float[] pointLast = Steps.Last();
+                    float[] pointBeforeLast = Steps[Steps.Count - 2];
 
-                    // if the difference between last two function values is less than the restriction, end the algorithm
-                    if (Math.Abs(currentPointValue - previousPointValue) < restrictions.FunctionValueDifferenceError)
+                    // determining the distance between the last two points
+                    float distanceBetweenMostRecentPoints = 0f;
+
+                    for (int j = 0; j < Dimension; j++)
+                    {
+                        distanceBetweenMostRecentPoints += (float)Math.Pow(pointLast[j] - pointBeforeLast[j], 2.0);
+                    }
+                    distanceBetweenMostRecentPoints = (float)Math.Sqrt(distanceBetweenMostRecentPoints);
+
+                    if (distanceBetweenMostRecentPoints < restrictions.ArgumentDifferenceError)
                     {
                         if (Debug.IsDebugOn)
-                            Console.WriteLine("the difference between last two function values is less than the restriction");
+                            Console.WriteLine("the distance between last two points is less than the restriction");
                         return true;
                     }
-                }  
+                }
+
+                // changing direction base
+                float[] newDirection = new float[Dimension];
+                float[] pointFirst = Steps[0];
+                float[] pointLastt = Steps.Last();
+
+                // determining the distance between the first and the last point
+                float distanceBetweenFirstAndLastPoints = 0f;
+
+                for (int j = 0; j < Dimension; j++)
+                {
+                    distanceBetweenFirstAndLastPoints += (float)Math.Pow(pointLastt[j] - pointFirst[j], 2.0);
+                }
+                distanceBetweenFirstAndLastPoints = (float)Math.Sqrt(distanceBetweenFirstAndLastPoints);
+
+                // preparing new direction
+                for (int j = 0; j < Dimension; j++)
+                {
+                    newDirection[j] = (pointLastt[j] - pointFirst[j]) / distanceBetweenFirstAndLastPoints;
+                }
+
+                // removing first direction and adding new one
+                DirectionBase.RemoveAt(0);
+                DirectionBase.Add(newDirection);
             }
             return true;
         }
