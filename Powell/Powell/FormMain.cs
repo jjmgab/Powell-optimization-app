@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -12,11 +13,19 @@ namespace Powell
         private float[] StartingPoint { get; set; }
 
         /// <summary>
+        /// Consecutive algorithm steps.
+        /// </summary>
+        private List<float[]> Steps { get; set; }
+
+        /// <summary>
         /// Main form constructor.
         /// </summary>
         public FormMain()
         {   
             InitializeComponent();
+
+            // set the icon
+            Icon = Properties.Resources.MainIcon;
 
             // adding sample 2D expressions
             comboBoxInputExpression.Items.AddRange(new string[]
@@ -44,7 +53,7 @@ namespace Powell
         /// <param name="expression"></param>
         /// <param name="horizontalRange"></param>
         /// <param name="verticalRange"></param>
-        private void FindOptimum(int dimension, float[] startingPoint, Solver.Restrictions restrictions, string expression, Range horizontalRange, Range verticalRange)
+        private List<float[]> FindOptimum(int dimension, float[] startingPoint, Solver.Restrictions restrictions, string expression, Range horizontalRange, Range verticalRange)
         {
             // solver instance
             Solver solver = new Solver(dimension, expression);
@@ -61,9 +70,14 @@ namespace Powell
                 // print optimum in messagebox
                 string optimum = string.Format("[{0}]", string.Join(", ", solver.Steps.Last()));
                 MessageBox.Show("Punkt optymalny:\r\n" + optimum, "Znaleziono punkt optymalny", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                return solver.Steps;
             }
             else
+            {
                 MessageBox.Show("Nie znaleziono punktu optymalnego", "Błąd", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return null;
+            }
         }
 
         /// <summary>
@@ -97,7 +111,7 @@ namespace Powell
             string expression = comboBoxInputExpression.Text;
 
             // start algorithm
-            FindOptimum(
+            Steps = FindOptimum(
                 dimension,
                 StartingPoint,
                 restrictions,
@@ -105,6 +119,8 @@ namespace Powell
                 new Range(-6f, 6f),
                 new Range(-6f, 6f)
                 );
+
+            buttonShowSteps.Enabled = true;
         }
 
         /// <summary>
@@ -114,6 +130,10 @@ namespace Powell
         /// <param name="e"></param>
         private void numericUpDownDimension_ValueChanged(object sender, EventArgs e)
         {
+            // if dim = 2, we can edit graph params
+            groupBoxGraphParams.Enabled = decimal.ToInt32(numericUpDownDimension.Value) == 2;
+
+            // change the dim of the starting point
             ChangeStartingPoint(new float[decimal.ToInt32(numericUpDownDimension.Value)]);
         }
 
@@ -125,7 +145,7 @@ namespace Powell
         private void buttonChangeStartingPoint_Click(object sender, EventArgs e)
         {
             // create an instance of a dialog to generate new point
-            FormPoint formPoint = new FormPoint(decimal.ToInt32(numericUpDownDimension.Value));
+            FormPoint formPoint = new FormPoint("Zmień punkt startowy", decimal.ToInt32(numericUpDownDimension.Value));
 
             // generate new point or null (if canceled)
             float[] newPoint = formPoint.CreateNewPoint();
@@ -133,6 +153,17 @@ namespace Powell
             // if the generated point is not null, swap it with current starting point
             if (newPoint != null)
                 ChangeStartingPoint(newPoint);
+        }
+
+        /// <summary>
+        /// After first successful algorithm carryout, one can view the consecutive steps.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void buttonShowSteps_Click(object sender, EventArgs e)
+        {
+            FormPoint formPoint = new FormPoint("Kroki algorytmu", decimal.ToInt32(numericUpDownDimension.Value), Steps);
+            formPoint.ShowDialog();
         }
     }
 }
