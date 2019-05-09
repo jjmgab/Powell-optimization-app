@@ -14,7 +14,7 @@ namespace Powell
         /// <returns></returns>
         public static string GeneratePointString(float[] point)
         {
-            return string.Format("[{0}]", string.Join(", ", point));
+            return string.Format("[{0}]", string.Join("; ", point));
         }
 
         /// <summary>

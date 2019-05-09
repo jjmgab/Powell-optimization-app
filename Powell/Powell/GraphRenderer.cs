@@ -277,8 +277,8 @@ namespace Powell
 
             using (Graphics g = Graphics.FromImage(image))
             {
-                Pen penPath = new Pen(Color.Cornsilk, 2);
-                Pen penPoint = new Pen(Color.Black, 2);
+                Pen penPath = new Pen(Color.LightBlue, 2);
+                Pen penPoint = new Pen(Color.Blue, 2);
 
                 // transform from function coord system to image coord system
                 // (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
