@@ -52,6 +52,16 @@
             this.numericUpDownDimension = new System.Windows.Forms.NumericUpDown();
             this.labelDimension = new System.Windows.Forms.Label();
             this.groupBoxGraphParams = new System.Windows.Forms.GroupBox();
+            this.numericUpDownRangeX2Upper = new System.Windows.Forms.NumericUpDown();
+            this.numericUpDownRangeX2Lower = new System.Windows.Forms.NumericUpDown();
+            this.labelRangeX23 = new System.Windows.Forms.Label();
+            this.labelRangeX22 = new System.Windows.Forms.Label();
+            this.labelRangeX21 = new System.Windows.Forms.Label();
+            this.labelRangeX13 = new System.Windows.Forms.Label();
+            this.labelRangeX12 = new System.Windows.Forms.Label();
+            this.labelRangeX11 = new System.Windows.Forms.Label();
+            this.numericUpDownRangeX1Upper = new System.Windows.Forms.NumericUpDown();
+            this.numericUpDownRangeX1Lower = new System.Windows.Forms.NumericUpDown();
             this.buttonShowSteps = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxGraph)).BeginInit();
             this.groupBoxRestrictions.SuspendLayout();
@@ -60,6 +70,11 @@
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownNumberOfIters)).BeginInit();
             this.groupBoxInput.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownDimension)).BeginInit();
+            this.groupBoxGraphParams.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownRangeX2Upper)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownRangeX2Lower)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownRangeX1Upper)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownRangeX1Lower)).BeginInit();
             this.SuspendLayout();
             // 
             // pictureBoxGraph
@@ -67,7 +82,7 @@
             this.pictureBoxGraph.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.pictureBoxGraph.Location = new System.Drawing.Point(433, 12);
             this.pictureBoxGraph.Name = "pictureBoxGraph";
-            this.pictureBoxGraph.Size = new System.Drawing.Size(376, 305);
+            this.pictureBoxGraph.Size = new System.Drawing.Size(471, 459);
             this.pictureBoxGraph.TabIndex = 0;
             this.pictureBoxGraph.TabStop = false;
             // 
@@ -120,13 +135,13 @@
             // 
             // numericUpDownArgDiff
             // 
-            this.numericUpDownArgDiff.DecimalPlaces = 3;
+            this.numericUpDownArgDiff.DecimalPlaces = 4;
             this.numericUpDownArgDiff.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.numericUpDownArgDiff.Increment = new decimal(new int[] {
             1,
             0,
             0,
-            196608});
+            262144});
             this.numericUpDownArgDiff.Location = new System.Drawing.Point(76, 45);
             this.numericUpDownArgDiff.Maximum = new decimal(new int[] {
             1,
@@ -137,7 +152,7 @@
             1,
             0,
             0,
-            196608});
+            262144});
             this.numericUpDownArgDiff.Name = "numericUpDownArgDiff";
             this.numericUpDownArgDiff.Size = new System.Drawing.Size(120, 20);
             this.numericUpDownArgDiff.TabIndex = 14;
@@ -179,13 +194,13 @@
             // 
             // numericUpDownFunValDiff
             // 
-            this.numericUpDownFunValDiff.DecimalPlaces = 3;
+            this.numericUpDownFunValDiff.DecimalPlaces = 4;
             this.numericUpDownFunValDiff.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.numericUpDownFunValDiff.Increment = new decimal(new int[] {
             1,
             0,
             0,
-            196608});
+            262144});
             this.numericUpDownFunValDiff.Location = new System.Drawing.Point(76, 71);
             this.numericUpDownFunValDiff.Maximum = new decimal(new int[] {
             1,
@@ -196,7 +211,7 @@
             1,
             0,
             0,
-            196608});
+            262144});
             this.numericUpDownFunValDiff.Name = "numericUpDownFunValDiff";
             this.numericUpDownFunValDiff.Size = new System.Drawing.Size(120, 20);
             this.numericUpDownFunValDiff.TabIndex = 4;
@@ -369,12 +384,158 @@
             // 
             // groupBoxGraphParams
             // 
-            this.groupBoxGraphParams.Location = new System.Drawing.Point(433, 324);
+            this.groupBoxGraphParams.Controls.Add(this.numericUpDownRangeX2Upper);
+            this.groupBoxGraphParams.Controls.Add(this.numericUpDownRangeX2Lower);
+            this.groupBoxGraphParams.Controls.Add(this.labelRangeX23);
+            this.groupBoxGraphParams.Controls.Add(this.labelRangeX22);
+            this.groupBoxGraphParams.Controls.Add(this.labelRangeX21);
+            this.groupBoxGraphParams.Controls.Add(this.labelRangeX13);
+            this.groupBoxGraphParams.Controls.Add(this.labelRangeX12);
+            this.groupBoxGraphParams.Controls.Add(this.labelRangeX11);
+            this.groupBoxGraphParams.Controls.Add(this.numericUpDownRangeX1Upper);
+            this.groupBoxGraphParams.Controls.Add(this.numericUpDownRangeX1Lower);
+            this.groupBoxGraphParams.Location = new System.Drawing.Point(12, 282);
             this.groupBoxGraphParams.Name = "groupBoxGraphParams";
-            this.groupBoxGraphParams.Size = new System.Drawing.Size(376, 147);
+            this.groupBoxGraphParams.Size = new System.Drawing.Size(411, 83);
             this.groupBoxGraphParams.TabIndex = 7;
             this.groupBoxGraphParams.TabStop = false;
             this.groupBoxGraphParams.Text = "Ustawienia wykresu";
+            // 
+            // numericUpDownRangeX2Upper
+            // 
+            this.numericUpDownRangeX2Upper.DecimalPlaces = 3;
+            this.numericUpDownRangeX2Upper.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.numericUpDownRangeX2Upper.Location = new System.Drawing.Point(189, 53);
+            this.numericUpDownRangeX2Upper.Minimum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            -2147483648});
+            this.numericUpDownRangeX2Upper.Name = "numericUpDownRangeX2Upper";
+            this.numericUpDownRangeX2Upper.Size = new System.Drawing.Size(98, 20);
+            this.numericUpDownRangeX2Upper.TabIndex = 25;
+            this.numericUpDownRangeX2Upper.Value = new decimal(new int[] {
+            5,
+            0,
+            0,
+            0});
+            // 
+            // numericUpDownRangeX2Lower
+            // 
+            this.numericUpDownRangeX2Lower.DecimalPlaces = 3;
+            this.numericUpDownRangeX2Lower.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.numericUpDownRangeX2Lower.Location = new System.Drawing.Point(66, 53);
+            this.numericUpDownRangeX2Lower.Minimum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            -2147483648});
+            this.numericUpDownRangeX2Lower.Name = "numericUpDownRangeX2Lower";
+            this.numericUpDownRangeX2Lower.Size = new System.Drawing.Size(98, 20);
+            this.numericUpDownRangeX2Lower.TabIndex = 24;
+            this.numericUpDownRangeX2Lower.Value = new decimal(new int[] {
+            5,
+            0,
+            0,
+            -2147483648});
+            // 
+            // labelRangeX23
+            // 
+            this.labelRangeX23.AutoSize = true;
+            this.labelRangeX23.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.labelRangeX23.Location = new System.Drawing.Point(293, 56);
+            this.labelRangeX23.Name = "labelRangeX23";
+            this.labelRangeX23.Size = new System.Drawing.Size(13, 13);
+            this.labelRangeX23.TabIndex = 23;
+            this.labelRangeX23.Text = "]";
+            // 
+            // labelRangeX22
+            // 
+            this.labelRangeX22.AutoSize = true;
+            this.labelRangeX22.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.labelRangeX22.Location = new System.Drawing.Point(170, 56);
+            this.labelRangeX22.Name = "labelRangeX22";
+            this.labelRangeX22.Size = new System.Drawing.Size(13, 13);
+            this.labelRangeX22.TabIndex = 22;
+            this.labelRangeX22.Text = ",";
+            // 
+            // labelRangeX21
+            // 
+            this.labelRangeX21.AutoSize = true;
+            this.labelRangeX21.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.labelRangeX21.Location = new System.Drawing.Point(15, 56);
+            this.labelRangeX21.Name = "labelRangeX21";
+            this.labelRangeX21.Size = new System.Drawing.Size(45, 13);
+            this.labelRangeX21.TabIndex = 21;
+            this.labelRangeX21.Text = "x2 ∈ [";
+            // 
+            // labelRangeX13
+            // 
+            this.labelRangeX13.AutoSize = true;
+            this.labelRangeX13.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.labelRangeX13.Location = new System.Drawing.Point(293, 30);
+            this.labelRangeX13.Name = "labelRangeX13";
+            this.labelRangeX13.Size = new System.Drawing.Size(13, 13);
+            this.labelRangeX13.TabIndex = 18;
+            this.labelRangeX13.Text = "]";
+            // 
+            // labelRangeX12
+            // 
+            this.labelRangeX12.AutoSize = true;
+            this.labelRangeX12.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.labelRangeX12.Location = new System.Drawing.Point(170, 30);
+            this.labelRangeX12.Name = "labelRangeX12";
+            this.labelRangeX12.Size = new System.Drawing.Size(13, 13);
+            this.labelRangeX12.TabIndex = 17;
+            this.labelRangeX12.Text = ",";
+            // 
+            // labelRangeX11
+            // 
+            this.labelRangeX11.AutoSize = true;
+            this.labelRangeX11.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.labelRangeX11.Location = new System.Drawing.Point(15, 30);
+            this.labelRangeX11.Name = "labelRangeX11";
+            this.labelRangeX11.Size = new System.Drawing.Size(45, 13);
+            this.labelRangeX11.TabIndex = 16;
+            this.labelRangeX11.Text = "x1 ∈ [";
+            // 
+            // numericUpDownRangeX1Upper
+            // 
+            this.numericUpDownRangeX1Upper.DecimalPlaces = 3;
+            this.numericUpDownRangeX1Upper.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.numericUpDownRangeX1Upper.Location = new System.Drawing.Point(189, 27);
+            this.numericUpDownRangeX1Upper.Minimum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            -2147483648});
+            this.numericUpDownRangeX1Upper.Name = "numericUpDownRangeX1Upper";
+            this.numericUpDownRangeX1Upper.Size = new System.Drawing.Size(98, 20);
+            this.numericUpDownRangeX1Upper.TabIndex = 15;
+            this.numericUpDownRangeX1Upper.Value = new decimal(new int[] {
+            5,
+            0,
+            0,
+            0});
+            // 
+            // numericUpDownRangeX1Lower
+            // 
+            this.numericUpDownRangeX1Lower.DecimalPlaces = 3;
+            this.numericUpDownRangeX1Lower.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.numericUpDownRangeX1Lower.Location = new System.Drawing.Point(66, 27);
+            this.numericUpDownRangeX1Lower.Minimum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            -2147483648});
+            this.numericUpDownRangeX1Lower.Name = "numericUpDownRangeX1Lower";
+            this.numericUpDownRangeX1Lower.Size = new System.Drawing.Size(98, 20);
+            this.numericUpDownRangeX1Lower.TabIndex = 14;
+            this.numericUpDownRangeX1Lower.Value = new decimal(new int[] {
+            5,
+            0,
+            0,
+            -2147483648});
             // 
             // buttonShowSteps
             // 
@@ -391,13 +552,14 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(821, 483);
+            this.ClientSize = new System.Drawing.Size(916, 483);
             this.Controls.Add(this.buttonShowSteps);
             this.Controls.Add(this.groupBoxGraphParams);
             this.Controls.Add(this.groupBoxInput);
             this.Controls.Add(this.groupBoxRestrictions);
             this.Controls.Add(this.buttonFindOptimum);
             this.Controls.Add(this.pictureBoxGraph);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.Name = "FormMain";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
@@ -411,6 +573,12 @@
             this.groupBoxInput.ResumeLayout(false);
             this.groupBoxInput.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownDimension)).EndInit();
+            this.groupBoxGraphParams.ResumeLayout(false);
+            this.groupBoxGraphParams.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownRangeX2Upper)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownRangeX2Lower)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownRangeX1Upper)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownRangeX1Lower)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -442,6 +610,16 @@
         private System.Windows.Forms.TextBox textBoxStartingPointValue;
         private System.Windows.Forms.Button buttonChangeStartingPoint;
         private System.Windows.Forms.Button buttonShowSteps;
+        private System.Windows.Forms.NumericUpDown numericUpDownRangeX2Upper;
+        private System.Windows.Forms.NumericUpDown numericUpDownRangeX2Lower;
+        private System.Windows.Forms.Label labelRangeX23;
+        private System.Windows.Forms.Label labelRangeX22;
+        private System.Windows.Forms.Label labelRangeX21;
+        private System.Windows.Forms.Label labelRangeX13;
+        private System.Windows.Forms.Label labelRangeX12;
+        private System.Windows.Forms.Label labelRangeX11;
+        private System.Windows.Forms.NumericUpDown numericUpDownRangeX1Upper;
+        private System.Windows.Forms.NumericUpDown numericUpDownRangeX1Lower;
     }
 }
 

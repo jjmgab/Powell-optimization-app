@@ -285,6 +285,8 @@ namespace Powell
                     {
                         if (Debug.IsDebugOn)
                             Console.WriteLine("the distance between last two points is less than the restriction");
+                        // remove last step, because when the condition is fulfilled, last two points are the same
+                        Steps.RemoveAt(Steps.Count - 1);
                         return true;
                     }
                 }
@@ -341,8 +343,6 @@ namespace Powell
                 // transform List<float[]> into PointF[] for 2D problem
                 renderer.DrawPoints(Steps.Select(p => new PointF(p[0],p[1])).ToArray());
             }
-            else
-                MessageBox.Show("Wizualizacja jest możliwa jedynie dla problemów 2-wymiarowych.", "Błąd wizualizacji", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
         /// <summary>

@@ -38,20 +38,29 @@ namespace Powell
 
             Text = title;
 
-            // add header
-            for (int i = 1; i < Dimension + 1; i++)
-            {
-                dataGridViewCoordinates.Columns.Add($"x{i}", $"x{i}");
-            }
+            
 
             // add one row for the user to edit
             if (points == null)
             {
+                for (int i = 1; i < Dimension + 1; i++)
+                {
+                    dataGridViewCoordinates.Columns.Add($"x{i}", $"x{i}");
+                }
+
                 dataGridViewCoordinates.ReadOnly = false;
                 dataGridViewCoordinates.Rows.Add();
             }
             else // add all points provided
             {
+                // add header
+                dataGridViewCoordinates.Columns.Add("lp", "lp");
+
+                for (int i = 1; i < Dimension + 1; i++)
+                {
+                    dataGridViewCoordinates.Columns.Add($"x{i}", $"x{i}");
+                }
+
                 // set the datagridview to readonly
                 dataGridViewCoordinates.ReadOnly = true;
 
@@ -61,9 +70,17 @@ namespace Powell
                 // move accept button as though there is no cancel button
                 buttonOk.Location = buttonCancel.Location;
 
-                foreach (float[] point in points)
+                //foreach (float[] point in points)
+                //{
+                //    dataGridViewCoordinates.Rows.Add(point.Select(x=>x.ToString()).ToArray());
+                //}
+
+                for (int i = 0; i < points.Count; i++)
                 {
-                    dataGridViewCoordinates.Rows.Add(point.Select(x=>x.ToString()).ToArray());
+                    string[] row = new string[points[0].Count() + 1];
+                    row[0] = $"x({i})";
+                    points[i].Select(x => x.ToString()).ToArray().CopyTo(row, 1);
+                    dataGridViewCoordinates.Rows.Add(row);
                 }
             }
             

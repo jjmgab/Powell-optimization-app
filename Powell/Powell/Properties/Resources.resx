@@ -117,8 +117,35 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Error" xml:space="preserve">
+    <value>Błąd</value>
+  </data>
+  <data name="ErrorExpressionEmpty" xml:space="preserve">
+    <value>Pole funkcji nie powinno być puste.</value>
+  </data>
+  <data name="ErrorOptimumNotFound" xml:space="preserve">
+    <value>Nie znaleziono punktu optymalnego.</value>
+  </data>
+  <data name="ErrorRangeInvalid" xml:space="preserve">
+    <value>Niewłaściwe zakresy, lewe ograniczenie przedziału powinno być mniejsze od prawego.</value>
+  </data>
+  <data name="InfoDrawingOnly2D" xml:space="preserve">
+    <value>Wykres dostępny tylko dla przypadku 2-wymiarowego.</value>
+  </data>
+  <data name="InfoOptimumFound" xml:space="preserve">
+    <value>Znaleziono punkt optymalny</value>
+  </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="MainIcon" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icon.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="MiscOptimum" xml:space="preserve">
+    <value>Punkt optymalny: {0}</value>
+  </data>
+  <data name="TitleChangeStartingPoint" xml:space="preserve">
+    <value>Zmień punkt startowy</value>
+  </data>
+  <data name="TitleSteps" xml:space="preserve">
+    <value>Kroki algorytmu</value>
   </data>
 </root>

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -26,6 +27,11 @@ namespace Powell
 
             // set the icon
             Icon = Properties.Resources.MainIcon;
+
+            if (pictureBoxGraph.Image == null)
+            {
+                pictureBoxGraph.Image = new Bitmap(pictureBoxGraph.Width, pictureBoxGraph.Height);
+            }
 
             // adding sample 2D expressions
             comboBoxInputExpression.Items.AddRange(new string[]
@@ -69,13 +75,13 @@ namespace Powell
 
                 // print optimum in messagebox
                 string optimum = string.Format("[{0}]", string.Join(", ", solver.Steps.Last()));
-                MessageBox.Show("Punkt optymalny:\r\n" + optimum, "Znaleziono punkt optymalny", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(string.Format(Properties.Resources.MiscOptimum, optimum), Properties.Resources.InfoOptimumFound, MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                 return solver.Steps;
             }
             else
             {
-                MessageBox.Show("Nie znaleziono punktu optymalnego", "Błąd", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(Properties.Resources.ErrorOptimumNotFound, Properties.Resources.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return null;
             }
         }
@@ -97,6 +103,21 @@ namespace Powell
         /// <param name="e"></param>
         private void buttonFindOptimum_Click(object sender, System.EventArgs e)
         {
+            // necessary verifications
+            // range
+            if (numericUpDownRangeX1Lower.Value >= numericUpDownRangeX1Upper.Value || numericUpDownRangeX2Lower.Value >= numericUpDownRangeX2Upper.Value)
+            {
+                MessageBox.Show(Properties.Resources.ErrorRangeInvalid, Properties.Resources.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            // expression empty
+            if (comboBoxInputExpression.Text == "")
+            {
+                MessageBox.Show(Properties.Resources.ErrorExpressionEmpty, Properties.Resources.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
             // problem dimension
             int dimension = decimal.ToInt32(numericUpDownDimension.Value);
 
@@ -116,8 +137,8 @@ namespace Powell
                 StartingPoint,
                 restrictions,
                 expression,
-                new Range(-6f, 6f),
-                new Range(-6f, 6f)
+                new Range((float)numericUpDownRangeX1Lower.Value, (float)numericUpDownRangeX1Upper.Value),
+                new Range((float)numericUpDownRangeX2Lower.Value, (float)numericUpDownRangeX2Upper.Value)
                 );
 
             buttonShowSteps.Enabled = true;
@@ -131,7 +152,34 @@ namespace Powell
         private void numericUpDownDimension_ValueChanged(object sender, EventArgs e)
         {
             // if dim = 2, we can edit graph params
-            groupBoxGraphParams.Enabled = decimal.ToInt32(numericUpDownDimension.Value) == 2;
+            if (decimal.ToInt32(numericUpDownDimension.Value) == 2)
+            {
+                groupBoxGraphParams.Enabled = true;
+
+                Image img = pictureBoxGraph.Image;
+                using (Graphics g = Graphics.FromImage(img))
+                {
+                    g.Clear(SystemColors.Control);
+                }
+            }
+            else
+            {
+                groupBoxGraphParams.Enabled = false;
+
+                // draw text with info (no graph for n > 2)
+                Image img = pictureBoxGraph.Image;
+                using (Graphics g = Graphics.FromImage(img))
+                {
+                    g.Clear(SystemColors.Control);
+                    g.DrawString(
+                        Properties.Resources.InfoDrawingOnly2D, 
+                        new Font(FontFamily.GenericMonospace, 10), 
+                        new SolidBrush(Color.Red), 
+                        new PointF(0.05f * img.Width, 0.05f * img.Height));
+                }
+            }
+
+            pictureBoxGraph.Invalidate();
 
             // change the dim of the starting point
             ChangeStartingPoint(new float[decimal.ToInt32(numericUpDownDimension.Value)]);
@@ -145,7 +193,7 @@ namespace Powell
         private void buttonChangeStartingPoint_Click(object sender, EventArgs e)
         {
             // create an instance of a dialog to generate new point
-            FormPoint formPoint = new FormPoint("Zmień punkt startowy", decimal.ToInt32(numericUpDownDimension.Value));
+            FormPoint formPoint = new FormPoint(Properties.Resources.TitleChangeStartingPoint, decimal.ToInt32(numericUpDownDimension.Value));
 
             // generate new point or null (if canceled)
             float[] newPoint = formPoint.CreateNewPoint();
@@ -162,7 +210,7 @@ namespace Powell
         /// <param name="e"></param>
         private void buttonShowSteps_Click(object sender, EventArgs e)
         {
-            FormPoint formPoint = new FormPoint("Kroki algorytmu", decimal.ToInt32(numericUpDownDimension.Value), Steps);
+            FormPoint formPoint = new FormPoint(Properties.Resources.TitleSteps, decimal.ToInt32(numericUpDownDimension.Value), Steps);
             formPoint.ShowDialog();
         }
     }

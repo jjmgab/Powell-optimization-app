@@ -61,12 +61,93 @@ namespace Powell.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Błąd.
+        /// </summary>
+        internal static string Error {
+            get {
+                return ResourceManager.GetString("Error", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pole funkcji nie powinno być puste..
+        /// </summary>
+        internal static string ErrorExpressionEmpty {
+            get {
+                return ResourceManager.GetString("ErrorExpressionEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Nie znaleziono punktu optymalnego..
+        /// </summary>
+        internal static string ErrorOptimumNotFound {
+            get {
+                return ResourceManager.GetString("ErrorOptimumNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Niewłaściwe zakresy, lewe ograniczenie przedziału powinno być mniejsze od prawego..
+        /// </summary>
+        internal static string ErrorRangeInvalid {
+            get {
+                return ResourceManager.GetString("ErrorRangeInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Wykres dostępny tylko dla przypadku 2-wymiarowego..
+        /// </summary>
+        internal static string InfoDrawingOnly2D {
+            get {
+                return ResourceManager.GetString("InfoDrawingOnly2D", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Znaleziono punkt optymalny.
+        /// </summary>
+        internal static string InfoOptimumFound {
+            get {
+                return ResourceManager.GetString("InfoOptimumFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
         /// </summary>
         internal static System.Drawing.Icon MainIcon {
             get {
                 object obj = ResourceManager.GetObject("MainIcon", resourceCulture);
                 return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Punkt optymalny: {0}.
+        /// </summary>
+        internal static string MiscOptimum {
+            get {
+                return ResourceManager.GetString("MiscOptimum", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Zmień punkt startowy.
+        /// </summary>
+        internal static string TitleChangeStartingPoint {
+            get {
+                return ResourceManager.GetString("TitleChangeStartingPoint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Kroki algorytmu.
+        /// </summary>
+        internal static string TitleSteps {
+            get {
+                return ResourceManager.GetString("TitleSteps", resourceCulture);
             }
         }
     }
