@@ -65,25 +65,22 @@ namespace Powell
             Solver solver = new Solver(dimension, expression);
 
             // find optimal point
-            if (solver.FindOptimalPoint(startingPoint, restrictions))
-            {
-                // visualize results if dim = 2
-                solver.VisualizeResults(
-                    pictureBoxGraph,
-                    horizontalRange,
-                    verticalRange);
+            bool pointFound = solver.FindOptimalPoint(startingPoint, restrictions);
 
-                // print optimum in messagebox
+            // visualize results if dim = 2
+            solver.VisualizeResults(
+                pictureBoxGraph,
+                horizontalRange,
+                verticalRange);
+
+            // print optimum in messagebox (if it was found)
+            if (pointFound)
+            {
                 string optimum = string.Format("[{0}]", string.Join(", ", solver.Steps.Last()));
                 MessageBox.Show(string.Format(Properties.Resources.MiscOptimum, optimum), Properties.Resources.InfoOptimumFound, MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
 
-                return solver.Steps;
-            }
-            else
-            {
-                MessageBox.Show(Properties.Resources.ErrorOptimumNotFound, Properties.Resources.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return null;
-            }
+            return solver.Steps;
         }
 
         /// <summary>

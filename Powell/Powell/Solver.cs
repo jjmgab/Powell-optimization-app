@@ -173,7 +173,8 @@ namespace Powell
                     // determining range for the minimum determination
                     float leftOffset = 0f;
                     float rightOffset = 0f;
-                    float offsetStep = 0.01f;
+                    float offsetStep = 0.1f;
+                    float offsetMax = 100f;
 
                     float startingPointValue = Expression.Evaluate(point);
 
@@ -193,7 +194,7 @@ namespace Powell
                             helperPoint[i] -= offsetStep;
                             leftOffset += offsetStep;
                         }
-                        while (previousValue > Expression.Evaluate(helperPoint));
+                        while (leftOffset < offsetMax && previousValue > Expression.Evaluate(helperPoint));
                     }
 
                     // back to the starting point, so the other direction can be verified
@@ -212,7 +213,7 @@ namespace Powell
                             helperPoint[i] += offsetStep;
                             rightOffset += offsetStep;
                         }
-                        while (previousValue > Expression.Evaluate(helperPoint));
+                        while (rightOffset < offsetMax && previousValue > Expression.Evaluate(helperPoint));
                     }
 
                     targetPoint[i] = GoldenSectionMethod(point[i] - leftOffset, point[i] + rightOffset, point, i, restrictions);
@@ -246,7 +247,9 @@ namespace Powell
             if (Debug.IsDebugOn)
                 PointHelper.ShowPointInfo(Steps.Last(), Expression, "punkt poczatkowy");
 
-            while (Steps.Count <= restrictions.NumberOfIterations)
+            int iterationNumber = 0;
+
+            while (iterationNumber < restrictions.NumberOfIterations)
             {
                 float currentPointValue = -1f;
                 float previousPointValue = Expression.Evaluate(Steps.Last());
@@ -254,10 +257,11 @@ namespace Powell
                 float[] newPoint = new float[startingPoint.Count()];
 
                 // find the direction with maximum function difference
-                for (int i = 0; i < Dimension; i++)
+                for (int i = 0; i < Dimension && iterationNumber < restrictions.NumberOfIterations; i++)
                 {
                     Steps.Last().CopyTo(newPoint, 0);
                     Steps.Add(MinimizeInDirection(newPoint, DirectionBase[i], restrictions));
+                    iterationNumber++;
 
                     if (Debug.IsDebugOn)
                         PointHelper.ShowPointInfo(Steps.Last(), Expression, "punkt");
@@ -315,7 +319,10 @@ namespace Powell
                 DirectionBase.RemoveAt(0);
                 DirectionBase.Add(newDirection);
             }
-            return true;
+
+            // if the number of iterations was exceeded we can assume that no optimum was found
+            MessageBox.Show(string.Format("{0}\r\n{1}", Properties.Resources.ErrorNumberofItersExceeded, Properties.Resources.ErrorOptimumNotFound), Properties.Resources.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
+            return false;
         }
 
         /// <summary>

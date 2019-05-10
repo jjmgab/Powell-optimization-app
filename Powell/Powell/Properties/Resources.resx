@@ -123,6 +123,9 @@
   <data name="ErrorExpressionEmpty" xml:space="preserve">
     <value>Pole funkcji nie powinno być puste.</value>
   </data>
+  <data name="ErrorNumberofItersExceeded" xml:space="preserve">
+    <value>Liczba iteracji przekroczona.</value>
+  </data>
   <data name="ErrorOptimumNotFound" xml:space="preserve">
     <value>Nie znaleziono punktu optymalnego.</value>
   </data>

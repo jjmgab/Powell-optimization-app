@@ -79,6 +79,15 @@ namespace Powell.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Liczba iteracji przekroczona..
+        /// </summary>
+        internal static string ErrorNumberofItersExceeded {
+            get {
+                return ResourceManager.GetString("ErrorNumberofItersExceeded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Nie znaleziono punktu optymalnego..
         /// </summary>
         internal static string ErrorOptimumNotFound {
