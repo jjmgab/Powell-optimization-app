@@ -406,8 +406,13 @@
             this.numericUpDownRangeX2Upper.DecimalPlaces = 3;
             this.numericUpDownRangeX2Upper.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.numericUpDownRangeX2Upper.Location = new System.Drawing.Point(189, 53);
+            this.numericUpDownRangeX2Upper.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
             this.numericUpDownRangeX2Upper.Minimum = new decimal(new int[] {
-            100,
+            1000,
             0,
             0,
             -2147483648});
@@ -425,8 +430,13 @@
             this.numericUpDownRangeX2Lower.DecimalPlaces = 3;
             this.numericUpDownRangeX2Lower.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.numericUpDownRangeX2Lower.Location = new System.Drawing.Point(66, 53);
+            this.numericUpDownRangeX2Lower.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
             this.numericUpDownRangeX2Lower.Minimum = new decimal(new int[] {
-            100,
+            1000,
             0,
             0,
             -2147483648});
@@ -504,8 +514,13 @@
             this.numericUpDownRangeX1Upper.DecimalPlaces = 3;
             this.numericUpDownRangeX1Upper.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.numericUpDownRangeX1Upper.Location = new System.Drawing.Point(189, 27);
+            this.numericUpDownRangeX1Upper.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
             this.numericUpDownRangeX1Upper.Minimum = new decimal(new int[] {
-            100,
+            1000,
             0,
             0,
             -2147483648});
@@ -523,8 +538,13 @@
             this.numericUpDownRangeX1Lower.DecimalPlaces = 3;
             this.numericUpDownRangeX1Lower.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.numericUpDownRangeX1Lower.Location = new System.Drawing.Point(66, 27);
+            this.numericUpDownRangeX1Lower.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
             this.numericUpDownRangeX1Lower.Minimum = new decimal(new int[] {
-            100,
+            1000,
             0,
             0,
             -2147483648});
