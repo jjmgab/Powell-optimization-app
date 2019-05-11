@@ -19,6 +19,11 @@ namespace Powell
         private List<float[]> Steps { get; set; }
 
         /// <summary>
+        /// Minimized expression.
+        /// </summary>
+        private string Expression { get; set; }
+
+        /// <summary>
         /// Main form constructor.
         /// </summary>
         public FormMain()
@@ -36,15 +41,15 @@ namespace Powell
             // adding sample 2D expressions
             comboBoxInputExpression.Items.AddRange(new string[]
             {
-                "x1*exp(-x1^2-x2^2)",
                 "(sin(x1)^2 + cos(x2)^2) / (5 + x1^2 + x2^2)",
+                "x1  *exp(-(x1^2 + x2^2))",
                 "x1^4 + x2^4 - 2*x1^2*x2 - 4*x1 + 3",
-                "(x1-2)^2 + (x2-2)^2",
-                "(x1^2+x2-11)^2+(x1+x2^2-7)^2-200",
-                "x1^4+x2^4-0.62*x1^2-0.62*x2^2",
+                "(x1 - 2)^2 + (x2 - 2)^2",
+                "(x1^2 + x2 - 11)^2 + (x1 + x2^2 - 7)^2 - 200",
+                "x1^4 + x2^4 - 0.62*x1^2 - 0.62*x2^2",
+                "-(1 + cos(12*sqrt(x1^2 + x2^2))) / (0.5*(x1^2 + x2^2) + 2)",
+                "(x1 - x2 + x3)^2 + (-x1 + x2 + x3)^2 + (x1 + x2 - x3)^2"
             });
-
-            Debug.DebugOn();
 
             // set initial starting point to [0;0]
             ChangeStartingPoint(new float[decimal.ToInt32(numericUpDownDimension.Value)]);
@@ -126,14 +131,14 @@ namespace Powell
                 );
 
             // expression string
-            string expression = comboBoxInputExpression.Text;
+            Expression = comboBoxInputExpression.Text;
 
             // start algorithm
             Steps = FindOptimum(
                 dimension,
                 StartingPoint,
                 restrictions,
-                expression,
+                Expression,
                 new Range((float)numericUpDownRangeX1Lower.Value, (float)numericUpDownRangeX1Upper.Value),
                 new Range((float)numericUpDownRangeX2Lower.Value, (float)numericUpDownRangeX2Upper.Value)
                 );
@@ -207,7 +212,7 @@ namespace Powell
         /// <param name="e"></param>
         private void buttonShowSteps_Click(object sender, EventArgs e)
         {
-            FormPoint formPoint = new FormPoint(Properties.Resources.TitleSteps, decimal.ToInt32(numericUpDownDimension.Value), Steps);
+            FormPoint formPoint = new FormPoint(Properties.Resources.TitleSteps, Steps[0].Count(), new ExpressionExt(Expression, Steps[0].Count()), Steps);
             formPoint.ShowDialog();
         }
     }

@@ -31,17 +31,14 @@ namespace Powell
         /// <param name="title"></param>
         /// <param name="dimension"></param>
         /// <param name="points"></param>
-        public FormPoint(string title, int dimension, List<float[]> points = null)
+        public FormPoint(string title, int dimension, ExpressionExt expression = null, List<float[]> points = null)
         {
             InitializeComponent();
             Dimension = dimension;
-
             Text = title;
 
-            
-
             // add one row for the user to edit
-            if (points == null)
+            if (expression == null || points == null)
             {
                 for (int i = 1; i < Dimension + 1; i++)
                 {
@@ -55,6 +52,7 @@ namespace Powell
             {
                 // add header
                 dataGridViewCoordinates.Columns.Add("lp", "lp");
+                dataGridViewCoordinates.Columns.Add("f_x", "f(x)");
 
                 for (int i = 1; i < Dimension + 1; i++)
                 {
@@ -70,16 +68,12 @@ namespace Powell
                 // move accept button as though there is no cancel button
                 buttonOk.Location = buttonCancel.Location;
 
-                //foreach (float[] point in points)
-                //{
-                //    dataGridViewCoordinates.Rows.Add(point.Select(x=>x.ToString()).ToArray());
-                //}
-
                 for (int i = 0; i < points.Count; i++)
                 {
-                    string[] row = new string[points[0].Count() + 1];
+                    string[] row = new string[points[0].Count() + 2];
                     row[0] = $"x({i})";
-                    points[i].Select(x => x.ToString()).ToArray().CopyTo(row, 1);
+                    row[1] = expression.Evaluate(points[i]).ToString();
+                    points[i].Select(x => x.ToString()).ToArray().CopyTo(row, 2);
                     dataGridViewCoordinates.Rows.Add(row);
                 }
             }

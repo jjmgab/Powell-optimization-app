@@ -98,8 +98,13 @@
             // 
             // comboBoxInputExpression
             // 
+            this.comboBoxInputExpression.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
+            this.comboBoxInputExpression.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            this.comboBoxInputExpression.DropDownHeight = 150;
+            this.comboBoxInputExpression.DropDownWidth = 370;
             this.comboBoxInputExpression.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.comboBoxInputExpression.FormattingEnabled = true;
+            this.comboBoxInputExpression.IntegralHeight = false;
             this.comboBoxInputExpression.Location = new System.Drawing.Point(76, 19);
             this.comboBoxInputExpression.Name = "comboBoxInputExpression";
             this.comboBoxInputExpression.Size = new System.Drawing.Size(329, 21);
