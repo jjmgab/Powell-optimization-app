@@ -151,4 +151,19 @@
   <data name="TitleSteps" xml:space="preserve">
     <value>Kroki algorytmu</value>
   </data>
+  <data name="TooltipMaxIter" xml:space="preserve">
+    <value>Maksymalna dopuszczalna liczba iteracji.</value>
+  </data>
+  <data name="TooltipMinArgDiff" xml:space="preserve">
+    <value>Minimalna dopuszczalna wartość odległości pomiędzy kolejnymi punktami.</value>
+  </data>
+  <data name="TooltipMinFunValDiff" xml:space="preserve">
+    <value>Minimalna dopuszczalna różnica pomiędzy wartościami kolejnych punktów.</value>
+  </data>
+  <data name="TooltipMinStep" xml:space="preserve">
+    <value>Minimalny krok algorytmu szukania zakresu dla minimum w kierunku.</value>
+  </data>
+  <data name="TooltipRangeWidth" xml:space="preserve">
+    <value>Maksymalna szerokość zakresu dla minimum w kierunku.</value>
+  </data>
 </root>

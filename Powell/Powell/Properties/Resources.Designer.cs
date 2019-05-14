@@ -159,5 +159,50 @@ namespace Powell.Properties {
                 return ResourceManager.GetString("TitleSteps", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Maksymalna dopuszczalna liczba iteracji..
+        /// </summary>
+        internal static string TooltipMaxIter {
+            get {
+                return ResourceManager.GetString("TooltipMaxIter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Minimalna dopuszczalna wartość odległości pomiędzy kolejnymi punktami..
+        /// </summary>
+        internal static string TooltipMinArgDiff {
+            get {
+                return ResourceManager.GetString("TooltipMinArgDiff", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Minimalna dopuszczalna różnica pomiędzy wartościami kolejnych punktów..
+        /// </summary>
+        internal static string TooltipMinFunValDiff {
+            get {
+                return ResourceManager.GetString("TooltipMinFunValDiff", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Minimalny krok algorytmu szukania zakresu dla minimum w kierunku..
+        /// </summary>
+        internal static string TooltipMinStep {
+            get {
+                return ResourceManager.GetString("TooltipMinStep", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Maksymalna szerokość zakresu dla minimum w kierunku..
+        /// </summary>
+        internal static string TooltipRangeWidth {
+            get {
+                return ResourceManager.GetString("TooltipRangeWidth", resourceCulture);
+            }
+        }
     }
 }

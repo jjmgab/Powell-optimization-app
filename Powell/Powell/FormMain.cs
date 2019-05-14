@@ -33,6 +33,13 @@ namespace Powell
             // set the icon
             Icon = Properties.Resources.MainIcon;
 
+            // set tooltips
+            toolTipHints.SetToolTip(labelMinStepSize, Properties.Resources.TooltipMinStep);
+            toolTipHints.SetToolTip(labelArgDiff, Properties.Resources.TooltipMinArgDiff);
+            toolTipHints.SetToolTip(labelFunValDiff, Properties.Resources.TooltipMinFunValDiff);
+            toolTipHints.SetToolTip(labelNumberOfIters, Properties.Resources.TooltipMaxIter);
+            toolTipHints.SetToolTip(labelRangeWidth, Properties.Resources.TooltipRangeWidth);
+
             if (pictureBoxGraph.Image == null)
             {
                 pictureBoxGraph.Image = new Bitmap(pictureBoxGraph.Width, pictureBoxGraph.Height);
@@ -130,8 +137,8 @@ namespace Powell
                 decimal.ToInt32(numericUpDownNumberOfIters.Value), 
                 (float)numericUpDownArgDiff.Value,
                 (float)numericUpDownFunValDiff.Value,
-                0.01f,
-                100f
+                (float)numericUpDownMinStepSize.Value,
+                (float)numericUpDownRangeWidth.Value
                 );
 
             // expression string
