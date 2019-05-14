@@ -140,7 +140,7 @@
             // 
             // numericUpDownArgDiff
             // 
-            this.numericUpDownArgDiff.DecimalPlaces = 4;
+            this.numericUpDownArgDiff.DecimalPlaces = 5;
             this.numericUpDownArgDiff.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.numericUpDownArgDiff.Increment = new decimal(new int[] {
             1,
@@ -157,7 +157,7 @@
             1,
             0,
             0,
-            262144});
+            327680});
             this.numericUpDownArgDiff.Name = "numericUpDownArgDiff";
             this.numericUpDownArgDiff.Size = new System.Drawing.Size(120, 20);
             this.numericUpDownArgDiff.TabIndex = 14;
@@ -199,7 +199,7 @@
             // 
             // numericUpDownFunValDiff
             // 
-            this.numericUpDownFunValDiff.DecimalPlaces = 4;
+            this.numericUpDownFunValDiff.DecimalPlaces = 5;
             this.numericUpDownFunValDiff.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.numericUpDownFunValDiff.Increment = new decimal(new int[] {
             1,
@@ -216,7 +216,7 @@
             1,
             0,
             0,
-            262144});
+            327680});
             this.numericUpDownFunValDiff.Name = "numericUpDownFunValDiff";
             this.numericUpDownFunValDiff.Size = new System.Drawing.Size(120, 20);
             this.numericUpDownFunValDiff.TabIndex = 4;

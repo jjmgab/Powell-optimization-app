@@ -42,7 +42,9 @@ namespace Powell
             comboBoxInputExpression.Items.AddRange(new string[]
             {
                 "(sin(x1)^2 + cos(x2)^2) / (5 + x1^2 + x2^2)",
-                "x1  *exp(-(x1^2 + x2^2))",
+                "(x1-2)^2+(x1-x2^2)^2",
+                "x1^2 + (x1-x2)^2",
+                "x1 * exp(-(x1^2 + x2^2))",
                 "x1^4 + x2^4 - 2*x1^2*x2 - 4*x1 + 3",
                 "(x1 - 2)^2 + (x2 - 2)^2",
                 "(x1^2 + x2 - 11)^2 + (x1 + x2^2 - 7)^2 - 200",
@@ -67,10 +69,10 @@ namespace Powell
         private List<float[]> FindOptimum(int dimension, float[] startingPoint, Solver.Restrictions restrictions, string expression, Range horizontalRange, Range verticalRange)
         {
             // solver instance
-            Solver solver = new Solver(dimension, expression);
+            Solver solver = new Solver(dimension, expression, restrictions);
 
             // find optimal point
-            bool pointFound = solver.FindOptimalPoint(startingPoint, restrictions);
+            bool pointFound = solver.FindOptimalPoint(startingPoint);
 
             // visualize results if dim = 2
             solver.VisualizeResults(
@@ -81,11 +83,11 @@ namespace Powell
             // print optimum in messagebox (if it was found)
             if (pointFound)
             {
-                string optimum = string.Format("[{0}]", string.Join(", ", solver.Steps.Last()));
+                string optimum = string.Format("[{0}]", string.Join(", ", solver.ConsecutivePointSeries.Last()));
                 MessageBox.Show(string.Format(Properties.Resources.MiscOptimum, optimum), Properties.Resources.InfoOptimumFound, MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
 
-            return solver.Steps;
+            return solver.ConsecutivePointSeries;
         }
 
         /// <summary>
@@ -127,7 +129,9 @@ namespace Powell
             Solver.Restrictions restrictions = new Solver.Restrictions(
                 decimal.ToInt32(numericUpDownNumberOfIters.Value), 
                 (float)numericUpDownArgDiff.Value,
-                (float)numericUpDownFunValDiff.Value
+                (float)numericUpDownFunValDiff.Value,
+                0.01f,
+                100f
                 );
 
             // expression string
