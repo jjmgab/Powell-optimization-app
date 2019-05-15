@@ -62,6 +62,9 @@ namespace Powell
 
             // set initial starting point to [0;0]
             ChangeStartingPoint(new float[decimal.ToInt32(numericUpDownDimension.Value)]);
+
+            groupBoxInput.Focus();
+            comboBoxInputExpression.Select();
         }
 
         /// <summary>

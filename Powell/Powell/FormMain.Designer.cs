@@ -34,11 +34,17 @@
             this.comboBoxInputExpression = new System.Windows.Forms.ComboBox();
             this.buttonFindOptimum = new System.Windows.Forms.Button();
             this.groupBoxRestrictions = new System.Windows.Forms.GroupBox();
+            this.labelEq8 = new System.Windows.Forms.Label();
             this.numericUpDownArgDiff = new System.Windows.Forms.NumericUpDown();
+            this.numericUpDownRangeWidth = new System.Windows.Forms.NumericUpDown();
             this.labelEq6 = new System.Windows.Forms.Label();
+            this.labelRangeWidth = new System.Windows.Forms.Label();
             this.labelEq5 = new System.Windows.Forms.Label();
+            this.labelEq7 = new System.Windows.Forms.Label();
             this.labelEq4 = new System.Windows.Forms.Label();
             this.numericUpDownFunValDiff = new System.Windows.Forms.NumericUpDown();
+            this.numericUpDownMinStepSize = new System.Windows.Forms.NumericUpDown();
+            this.labelMinStepSize = new System.Windows.Forms.Label();
             this.numericUpDownNumberOfIters = new System.Windows.Forms.NumericUpDown();
             this.labelNumberOfIters = new System.Windows.Forms.Label();
             this.labelFunValDiff = new System.Windows.Forms.Label();
@@ -64,17 +70,13 @@
             this.numericUpDownRangeX1Upper = new System.Windows.Forms.NumericUpDown();
             this.numericUpDownRangeX1Lower = new System.Windows.Forms.NumericUpDown();
             this.buttonShowSteps = new System.Windows.Forms.Button();
-            this.labelEq7 = new System.Windows.Forms.Label();
-            this.numericUpDownMinStepSize = new System.Windows.Forms.NumericUpDown();
-            this.labelMinStepSize = new System.Windows.Forms.Label();
-            this.labelEq8 = new System.Windows.Forms.Label();
-            this.numericUpDownRangeWidth = new System.Windows.Forms.NumericUpDown();
-            this.labelRangeWidth = new System.Windows.Forms.Label();
             this.toolTipHints = new System.Windows.Forms.ToolTip(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxGraph)).BeginInit();
             this.groupBoxRestrictions.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownArgDiff)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownRangeWidth)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownFunValDiff)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownMinStepSize)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownNumberOfIters)).BeginInit();
             this.groupBoxInput.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownDimension)).BeginInit();
@@ -83,8 +85,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownRangeX2Lower)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownRangeX1Upper)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownRangeX1Lower)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownMinStepSize)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownRangeWidth)).BeginInit();
             this.SuspendLayout();
             // 
             // pictureBoxGraph
@@ -118,14 +118,14 @@
             this.comboBoxInputExpression.Location = new System.Drawing.Point(76, 19);
             this.comboBoxInputExpression.Name = "comboBoxInputExpression";
             this.comboBoxInputExpression.Size = new System.Drawing.Size(329, 21);
-            this.comboBoxInputExpression.TabIndex = 3;
+            this.comboBoxInputExpression.TabIndex = 0;
             // 
             // buttonFindOptimum
             // 
             this.buttonFindOptimum.Location = new System.Drawing.Point(12, 448);
             this.buttonFindOptimum.Name = "buttonFindOptimum";
             this.buttonFindOptimum.Size = new System.Drawing.Size(266, 23);
-            this.buttonFindOptimum.TabIndex = 4;
+            this.buttonFindOptimum.TabIndex = 12;
             this.buttonFindOptimum.Text = "Start";
             this.buttonFindOptimum.UseVisualStyleBackColor = true;
             this.buttonFindOptimum.Click += new System.EventHandler(this.buttonFindOptimum_Click);
@@ -150,9 +150,19 @@
             this.groupBoxRestrictions.Location = new System.Drawing.Point(12, 176);
             this.groupBoxRestrictions.Name = "groupBoxRestrictions";
             this.groupBoxRestrictions.Size = new System.Drawing.Size(411, 153);
-            this.groupBoxRestrictions.TabIndex = 5;
+            this.groupBoxRestrictions.TabIndex = 2;
             this.groupBoxRestrictions.TabStop = false;
             this.groupBoxRestrictions.Text = "Ograniczenia";
+            // 
+            // labelEq8
+            // 
+            this.labelEq8.AutoSize = true;
+            this.labelEq8.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.labelEq8.Location = new System.Drawing.Point(45, 125);
+            this.labelEq8.Name = "labelEq8";
+            this.labelEq8.Size = new System.Drawing.Size(13, 13);
+            this.labelEq8.TabIndex = 28;
+            this.labelEq8.Text = "=";
             // 
             // numericUpDownArgDiff
             // 
@@ -173,15 +183,38 @@
             1,
             0,
             0,
-            327680});
+            262144});
             this.numericUpDownArgDiff.Name = "numericUpDownArgDiff";
             this.numericUpDownArgDiff.Size = new System.Drawing.Size(120, 20);
-            this.numericUpDownArgDiff.TabIndex = 14;
+            this.numericUpDownArgDiff.TabIndex = 4;
             this.numericUpDownArgDiff.Value = new decimal(new int[] {
             1,
             0,
             0,
             196608});
+            // 
+            // numericUpDownRangeWidth
+            // 
+            this.numericUpDownRangeWidth.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.numericUpDownRangeWidth.Location = new System.Drawing.Point(76, 123);
+            this.numericUpDownRangeWidth.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+            this.numericUpDownRangeWidth.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.numericUpDownRangeWidth.Name = "numericUpDownRangeWidth";
+            this.numericUpDownRangeWidth.Size = new System.Drawing.Size(120, 20);
+            this.numericUpDownRangeWidth.TabIndex = 7;
+            this.numericUpDownRangeWidth.Value = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
             // 
             // labelEq6
             // 
@@ -193,6 +226,16 @@
             this.labelEq6.TabIndex = 13;
             this.labelEq6.Text = "=";
             // 
+            // labelRangeWidth
+            // 
+            this.labelRangeWidth.AutoSize = true;
+            this.labelRangeWidth.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.labelRangeWidth.Location = new System.Drawing.Point(6, 125);
+            this.labelRangeWidth.Name = "labelRangeWidth";
+            this.labelRangeWidth.Size = new System.Drawing.Size(25, 13);
+            this.labelRangeWidth.TabIndex = 26;
+            this.labelRangeWidth.Text = "[,]";
+            // 
             // labelEq5
             // 
             this.labelEq5.AutoSize = true;
@@ -202,6 +245,16 @@
             this.labelEq5.Size = new System.Drawing.Size(13, 13);
             this.labelEq5.TabIndex = 12;
             this.labelEq5.Text = "=";
+            // 
+            // labelEq7
+            // 
+            this.labelEq7.AutoSize = true;
+            this.labelEq7.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.labelEq7.Location = new System.Drawing.Point(45, 99);
+            this.labelEq7.Name = "labelEq7";
+            this.labelEq7.Size = new System.Drawing.Size(13, 13);
+            this.labelEq7.TabIndex = 17;
+            this.labelEq7.Text = "=";
             // 
             // labelEq4
             // 
@@ -232,15 +285,54 @@
             1,
             0,
             0,
-            327680});
+            262144});
             this.numericUpDownFunValDiff.Name = "numericUpDownFunValDiff";
             this.numericUpDownFunValDiff.Size = new System.Drawing.Size(120, 20);
-            this.numericUpDownFunValDiff.TabIndex = 4;
+            this.numericUpDownFunValDiff.TabIndex = 5;
             this.numericUpDownFunValDiff.Value = new decimal(new int[] {
             1,
             0,
             0,
             196608});
+            // 
+            // numericUpDownMinStepSize
+            // 
+            this.numericUpDownMinStepSize.DecimalPlaces = 3;
+            this.numericUpDownMinStepSize.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.numericUpDownMinStepSize.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            196608});
+            this.numericUpDownMinStepSize.Location = new System.Drawing.Point(76, 97);
+            this.numericUpDownMinStepSize.Maximum = new decimal(new int[] {
+            999,
+            0,
+            0,
+            196608});
+            this.numericUpDownMinStepSize.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            196608});
+            this.numericUpDownMinStepSize.Name = "numericUpDownMinStepSize";
+            this.numericUpDownMinStepSize.Size = new System.Drawing.Size(120, 20);
+            this.numericUpDownMinStepSize.TabIndex = 6;
+            this.numericUpDownMinStepSize.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            65536});
+            // 
+            // labelMinStepSize
+            // 
+            this.labelMinStepSize.AutoSize = true;
+            this.labelMinStepSize.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.labelMinStepSize.Location = new System.Drawing.Point(7, 99);
+            this.labelMinStepSize.Name = "labelMinStepSize";
+            this.labelMinStepSize.Size = new System.Drawing.Size(19, 13);
+            this.labelMinStepSize.TabIndex = 15;
+            this.labelMinStepSize.Text = "δx";
             // 
             // numericUpDownNumberOfIters
             // 
@@ -305,7 +397,7 @@
             this.groupBoxInput.Location = new System.Drawing.Point(12, 12);
             this.groupBoxInput.Name = "groupBoxInput";
             this.groupBoxInput.Size = new System.Drawing.Size(411, 158);
-            this.groupBoxInput.TabIndex = 6;
+            this.groupBoxInput.TabIndex = 1;
             this.groupBoxInput.TabStop = false;
             this.groupBoxInput.Text = "Parametry wejściowe";
             // 
@@ -314,7 +406,7 @@
             this.buttonChangeStartingPoint.Location = new System.Drawing.Point(272, 128);
             this.buttonChangeStartingPoint.Name = "buttonChangeStartingPoint";
             this.buttonChangeStartingPoint.Size = new System.Drawing.Size(133, 23);
-            this.buttonChangeStartingPoint.TabIndex = 11;
+            this.buttonChangeStartingPoint.TabIndex = 2;
             this.buttonChangeStartingPoint.Text = "Zmień punkt startowy";
             this.buttonChangeStartingPoint.UseVisualStyleBackColor = true;
             this.buttonChangeStartingPoint.Click += new System.EventHandler(this.buttonChangeStartingPoint_Click);
@@ -327,7 +419,8 @@
             this.textBoxStartingPointValue.Name = "textBoxStartingPointValue";
             this.textBoxStartingPointValue.ReadOnly = true;
             this.textBoxStartingPointValue.Size = new System.Drawing.Size(329, 50);
-            this.textBoxStartingPointValue.TabIndex = 10;
+            this.textBoxStartingPointValue.TabIndex = 99;
+            this.textBoxStartingPointValue.TabStop = false;
             // 
             // labelEq3
             // 
@@ -385,7 +478,7 @@
             0});
             this.numericUpDownDimension.Name = "numericUpDownDimension";
             this.numericUpDownDimension.Size = new System.Drawing.Size(67, 20);
-            this.numericUpDownDimension.TabIndex = 5;
+            this.numericUpDownDimension.TabIndex = 1;
             this.numericUpDownDimension.Value = new decimal(new int[] {
             2,
             0,
@@ -418,7 +511,7 @@
             this.groupBoxGraphParams.Location = new System.Drawing.Point(12, 335);
             this.groupBoxGraphParams.Name = "groupBoxGraphParams";
             this.groupBoxGraphParams.Size = new System.Drawing.Size(411, 107);
-            this.groupBoxGraphParams.TabIndex = 7;
+            this.groupBoxGraphParams.TabIndex = 3;
             this.groupBoxGraphParams.TabStop = false;
             this.groupBoxGraphParams.Text = "Ustawienia wykresu";
             // 
@@ -439,7 +532,7 @@
             -2147483648});
             this.numericUpDownRangeX2Upper.Name = "numericUpDownRangeX2Upper";
             this.numericUpDownRangeX2Upper.Size = new System.Drawing.Size(98, 20);
-            this.numericUpDownRangeX2Upper.TabIndex = 25;
+            this.numericUpDownRangeX2Upper.TabIndex = 11;
             this.numericUpDownRangeX2Upper.Value = new decimal(new int[] {
             5,
             0,
@@ -463,7 +556,7 @@
             -2147483648});
             this.numericUpDownRangeX2Lower.Name = "numericUpDownRangeX2Lower";
             this.numericUpDownRangeX2Lower.Size = new System.Drawing.Size(98, 20);
-            this.numericUpDownRangeX2Lower.TabIndex = 24;
+            this.numericUpDownRangeX2Lower.TabIndex = 10;
             this.numericUpDownRangeX2Lower.Value = new decimal(new int[] {
             5,
             0,
@@ -547,7 +640,7 @@
             -2147483648});
             this.numericUpDownRangeX1Upper.Name = "numericUpDownRangeX1Upper";
             this.numericUpDownRangeX1Upper.Size = new System.Drawing.Size(98, 20);
-            this.numericUpDownRangeX1Upper.TabIndex = 15;
+            this.numericUpDownRangeX1Upper.TabIndex = 9;
             this.numericUpDownRangeX1Upper.Value = new decimal(new int[] {
             5,
             0,
@@ -571,7 +664,7 @@
             -2147483648});
             this.numericUpDownRangeX1Lower.Name = "numericUpDownRangeX1Lower";
             this.numericUpDownRangeX1Lower.Size = new System.Drawing.Size(98, 20);
-            this.numericUpDownRangeX1Lower.TabIndex = 14;
+            this.numericUpDownRangeX1Lower.TabIndex = 8;
             this.numericUpDownRangeX1Lower.Value = new decimal(new int[] {
             5,
             0,
@@ -585,101 +678,10 @@
             this.buttonShowSteps.Name = "buttonShowSteps";
             this.buttonShowSteps.Size = new System.Drawing.Size(143, 23);
             this.buttonShowSteps.TabIndex = 8;
+            this.buttonShowSteps.TabStop = false;
             this.buttonShowSteps.Text = "Wyświetl kroki";
             this.buttonShowSteps.UseVisualStyleBackColor = true;
             this.buttonShowSteps.Click += new System.EventHandler(this.buttonShowSteps_Click);
-            // 
-            // labelEq7
-            // 
-            this.labelEq7.AutoSize = true;
-            this.labelEq7.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.labelEq7.Location = new System.Drawing.Point(45, 99);
-            this.labelEq7.Name = "labelEq7";
-            this.labelEq7.Size = new System.Drawing.Size(13, 13);
-            this.labelEq7.TabIndex = 17;
-            this.labelEq7.Text = "=";
-            // 
-            // numericUpDownMinStepSize
-            // 
-            this.numericUpDownMinStepSize.DecimalPlaces = 3;
-            this.numericUpDownMinStepSize.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.numericUpDownMinStepSize.Increment = new decimal(new int[] {
-            1,
-            0,
-            0,
-            196608});
-            this.numericUpDownMinStepSize.Location = new System.Drawing.Point(76, 97);
-            this.numericUpDownMinStepSize.Maximum = new decimal(new int[] {
-            999,
-            0,
-            0,
-            196608});
-            this.numericUpDownMinStepSize.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            196608});
-            this.numericUpDownMinStepSize.Name = "numericUpDownMinStepSize";
-            this.numericUpDownMinStepSize.Size = new System.Drawing.Size(120, 20);
-            this.numericUpDownMinStepSize.TabIndex = 16;
-            this.numericUpDownMinStepSize.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            65536});
-            // 
-            // labelMinStepSize
-            // 
-            this.labelMinStepSize.AutoSize = true;
-            this.labelMinStepSize.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.labelMinStepSize.Location = new System.Drawing.Point(7, 99);
-            this.labelMinStepSize.Name = "labelMinStepSize";
-            this.labelMinStepSize.Size = new System.Drawing.Size(19, 13);
-            this.labelMinStepSize.TabIndex = 15;
-            this.labelMinStepSize.Text = "δx";
-            // 
-            // labelEq8
-            // 
-            this.labelEq8.AutoSize = true;
-            this.labelEq8.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.labelEq8.Location = new System.Drawing.Point(45, 125);
-            this.labelEq8.Name = "labelEq8";
-            this.labelEq8.Size = new System.Drawing.Size(13, 13);
-            this.labelEq8.TabIndex = 28;
-            this.labelEq8.Text = "=";
-            // 
-            // numericUpDownRangeWidth
-            // 
-            this.numericUpDownRangeWidth.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.numericUpDownRangeWidth.Location = new System.Drawing.Point(76, 123);
-            this.numericUpDownRangeWidth.Maximum = new decimal(new int[] {
-            1000,
-            0,
-            0,
-            0});
-            this.numericUpDownRangeWidth.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.numericUpDownRangeWidth.Name = "numericUpDownRangeWidth";
-            this.numericUpDownRangeWidth.Size = new System.Drawing.Size(120, 20);
-            this.numericUpDownRangeWidth.TabIndex = 27;
-            this.numericUpDownRangeWidth.Value = new decimal(new int[] {
-            100,
-            0,
-            0,
-            0});
-            // 
-            // labelRangeWidth
-            // 
-            this.labelRangeWidth.AutoSize = true;
-            this.labelRangeWidth.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.labelRangeWidth.Location = new System.Drawing.Point(6, 125);
-            this.labelRangeWidth.Name = "labelRangeWidth";
-            this.labelRangeWidth.Size = new System.Drawing.Size(25, 13);
-            this.labelRangeWidth.TabIndex = 26;
-            this.labelRangeWidth.Text = "[,]";
             // 
             // toolTipHints
             // 
@@ -687,6 +689,7 @@
             // 
             // FormMain
             // 
+            this.AcceptButton = this.buttonFindOptimum;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(916, 483);
@@ -705,7 +708,9 @@
             this.groupBoxRestrictions.ResumeLayout(false);
             this.groupBoxRestrictions.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownArgDiff)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownRangeWidth)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownFunValDiff)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownMinStepSize)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownNumberOfIters)).EndInit();
             this.groupBoxInput.ResumeLayout(false);
             this.groupBoxInput.PerformLayout();
@@ -716,8 +721,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownRangeX2Lower)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownRangeX1Upper)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownRangeX1Lower)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownMinStepSize)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownRangeWidth)).EndInit();
             this.ResumeLayout(false);
 
         }

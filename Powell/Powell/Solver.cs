@@ -108,6 +108,25 @@ namespace Powell
         }
 
         /// <summary>
+        /// Enum defining the direction, towards which the minimum could be possibly found.
+        /// </summary>
+        private enum MinimumDirection
+        {
+            /// <summary>
+            /// Minimum lies along the direction
+            /// </summary>
+            MinimumInDirection = 1,
+            /// <summary>
+            /// Minimum lies in opposite direction
+            /// </summary>
+            MinimumInOppositeDirection = -1,
+            /// <summary>
+            /// Minimum could not be found
+            /// </summary>
+            MinimumDirectionNotFound = 0
+        }
+
+        /// <summary>
         /// Constructor.
         /// </summary>
         /// <param name="dimensionOfProblem">Dimension of the considered problem</param>
@@ -245,19 +264,19 @@ namespace Powell
         /// <param name="startingPoint"></param>
         /// <param name="direction"></param>
         /// <returns>1 if in direction, -1 if in opposite direction, 0 otherwise</returns>
-        private int FindDirectionTowardsMinimum(float[] startingPoint, float[] direction)
+        private MinimumDirection FindDirectionTowardsMinimum(float[] startingPoint, float[] direction)
         {
             if (IsMinimumInDirection(startingPoint, direction))
             {
-                return 1;
+                return MinimumDirection.MinimumInDirection;
             }
             else if (IsMinimumInOppositeDirection(startingPoint, direction))
             {
-                return -1;
+                return MinimumDirection.MinimumInOppositeDirection;
             }
             else
             {
-                return 0;
+                return MinimumDirection.MinimumDirectionNotFound;
             }
         }
 
@@ -297,8 +316,11 @@ namespace Powell
             float differenceBetweenConsecutivePointsValue = 0;
             float previousPointValue = OptimizedExpression.Evaluate(firstPoint);
             bool maximumOffsetValueReached = false;
+
             do
             {
+                previousPointValue = OptimizedExpression.Evaluate(secondPoint);
+
                 for (int i = 0; i < DimensionOfProblem; i++)
                 {
                     if (consideredCoordinates[i])
@@ -312,7 +334,10 @@ namespace Powell
                         }
                     }
                 }
-            } while (!maximumOffsetValueReached && differenceBetweenConsecutivePointsValue < AlgorithmRestrictions.MinimalFunctionValueDifference);
+
+                differenceBetweenConsecutivePointsValue = OptimizedExpression.Evaluate(secondPoint) - previousPointValue;
+
+            } while (!maximumOffsetValueReached && !(differenceBetweenConsecutivePointsValue > 0 && Math.Abs(differenceBetweenConsecutivePointsValue) > AlgorithmRestrictions.MinimalFunctionValueDifference));
 
             return secondPoint;
         }
@@ -325,15 +350,15 @@ namespace Powell
         /// <returns></returns>
         private float[] FindMinimalValuePointAlongDirection(float[] startingPoint, float[] directionOfOptimization)
         {
-            int directionTowardsMinimum = FindDirectionTowardsMinimum(startingPoint, directionOfOptimization);
+            MinimumDirection directionTowardsMinimum = FindDirectionTowardsMinimum(startingPoint, directionOfOptimization);
 
             // if direction towards minimum is 0, starting point is the minimum
-            if (directionTowardsMinimum == 0)
+            if (directionTowardsMinimum == MinimumDirection.MinimumDirectionNotFound)
             {
                 return startingPoint;
             }
 
-            float[] secondPoint = FindSecondPointOfUnimodalRangeAlongDirection(startingPoint, directionOfOptimization, directionTowardsMinimum);
+            float[] secondPoint = FindSecondPointOfUnimodalRangeAlongDirection(startingPoint, directionOfOptimization, (int)directionTowardsMinimum);
             return FindMinimalValuePointBetweenTwoPoints(startingPoint, secondPoint);
         }
 

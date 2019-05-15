@@ -77,8 +77,8 @@ namespace Powell
                     dataGridViewCoordinates.Rows.Add(row);
                 }
             }
-            
 
+            dataGridViewCoordinates.Select();
         }
 
         /// <summary>
@@ -110,7 +110,6 @@ namespace Powell
                         }
                         newPoint[i] = value;
                     }
-
                     return newPoint;
                 }
             }
