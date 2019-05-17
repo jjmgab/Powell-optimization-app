@@ -34,11 +34,6 @@ namespace Powell
         private List<float[]> DirectionSeries { get; set; } = new List<float[]>();
 
         /// <summary>
-        /// Number of times the dimension base was changed.
-        /// </summary>
-        private int NumberOfSwappedDirections { get; set; }
-
-        /// <summary>
         /// A container for global algorithm restrictions.
         /// </summary>
         private Restrictions AlgorithmRestrictions { get; }
@@ -140,7 +135,6 @@ namespace Powell
             DimensionOfProblem = dimensionOfProblem;
             OptimizedExpression = new ExpressionExt(optimizedFunctionString, dimensionOfProblem);
             AlgorithmRestrictions = restrictions;
-            NumberOfSwappedDirections = 0;
 
             FillDirectionSeriesWithCartesianCoordinateSystemBase();
         }
@@ -154,21 +148,23 @@ namespace Powell
         /// <param name="startingPoint"></param>
         /// <param name="indexOfMinimizedPointCoordinate"></param>
         /// <returns></returns>
-        private float FindMinimumInOneDirection(float leftOuterBound, float rightOuterBound, float[] startingPoint, int indexOfMinimizedPointCoordinate)
+        private float[] FindMinimalValuePointBetweenTwoPoints(float[] leftOuterBound, float[] rightOuterBound)
         {
+            float[] startingPoint = new float[DimensionOfProblem];
+            leftOuterBound.CopyTo(startingPoint, 0);
+
             float goldenRationCoefficient = ((float)Math.Sqrt(5) - 1) / 2;
 
-            float leftInnerBound = rightOuterBound - goldenRationCoefficient * (rightOuterBound - leftOuterBound);
-            float rightInnerBound = leftOuterBound + goldenRationCoefficient * (rightOuterBound - leftOuterBound);
+            float leftGoldenRationFunction(float leftPoint, float rightPoint) => rightPoint - goldenRationCoefficient * (rightPoint - leftPoint);
+            float rightGoldenRationFunction(float leftPoint, float rightPoint) => leftPoint + goldenRationCoefficient * (rightPoint - leftPoint);
 
-            // do until argument difference restriction reached
-            while ((rightOuterBound - leftOuterBound) > AlgorithmRestrictions.MinimalArgumentDifference)
+            float[] leftInnerBound = PointHelper.TwoPointFunction(leftOuterBound, rightOuterBound, leftGoldenRationFunction);
+            float[] rightInnerBound = PointHelper.TwoPointFunction(leftOuterBound, rightOuterBound, rightGoldenRationFunction);
+
+            while (FindDistanceBetweenTwoPoints(rightOuterBound, leftOuterBound) > AlgorithmRestrictions.MinimalArgumentDifference)
             {
-                // calculate function values at inner points
-                startingPoint[indexOfMinimizedPointCoordinate] = leftInnerBound;
-                float leftInnerBoundFunctionValue = OptimizedExpression.Evaluate(startingPoint);
-                startingPoint[indexOfMinimizedPointCoordinate] = rightInnerBound;
-                float rightInnerBoundFunctionValue = OptimizedExpression.Evaluate(startingPoint);
+                float leftInnerBoundFunctionValue = OptimizedExpression.Evaluate(leftInnerBound);
+                float rightInnerBoundFunctionValue = OptimizedExpression.Evaluate(rightInnerBound);
 
                 // compare function values at left and right inner point
                 if (leftInnerBoundFunctionValue > rightInnerBoundFunctionValue)
@@ -176,41 +172,18 @@ namespace Powell
                     // minimum is within [left inner point, right bound]
                     leftOuterBound = leftInnerBound;
                     leftInnerBound = rightInnerBound;
-                    rightInnerBound = leftOuterBound + goldenRationCoefficient * (rightOuterBound - leftOuterBound);
+                    rightInnerBound = PointHelper.TwoPointFunction(leftOuterBound, rightOuterBound, rightGoldenRationFunction);
                 }
                 else
                 {
                     // minimum is within [left bound, right inner point]
                     rightOuterBound = rightInnerBound;
                     rightInnerBound = leftInnerBound;
-                    leftInnerBound = rightOuterBound - goldenRationCoefficient * (rightOuterBound - leftOuterBound);
+                    leftInnerBound = PointHelper.TwoPointFunction(leftOuterBound, rightOuterBound, leftGoldenRationFunction);
                 }
             }
-            // estimated minimum is between left and right bound
-            return (leftOuterBound + rightOuterBound) / 2;
-        }
 
-        /// <summary>
-        /// Finds the minimal point value between two points.
-        /// </summary>
-        /// <param name="firstPoint"></param>
-        /// <param name="lastPoint"></param>
-        /// <returns></returns>
-        private float[] FindMinimalValuePointBetweenTwoPoints(float[] firstPoint, float[] lastPoint)
-        {
-            float[] targetMinimalPoint = new float[DimensionOfProblem];
-            for (int i = 0; i < DimensionOfProblem; i++)
-            {
-                if (Math.Abs(lastPoint[i] - firstPoint[i]) > AlgorithmRestrictions.MinimalArgumentDifference)
-                {
-                    targetMinimalPoint[i] = FindMinimumInOneDirection(Math.Min(firstPoint[i], lastPoint[i]), Math.Max(firstPoint[i], lastPoint[i]), firstPoint, i);
-                }
-                else
-                {
-                    targetMinimalPoint[i] = firstPoint[i];
-                }
-            }
-            return targetMinimalPoint;
+            return PointHelper.TwoPointFunction(leftOuterBound, rightOuterBound, PointHelper.MiddleValue);
         }
 
         /// <summary>
@@ -224,13 +197,9 @@ namespace Powell
             float[] temporaryStartingPoint = new float[DimensionOfProblem];
             startingPoint.CopyTo(temporaryStartingPoint, 0);
 
-            for (int i = 0; i < DimensionOfProblem; i++)
-            {
-                if (Math.Abs(direction[i]) > AlgorithmRestrictions.MinimalFunctionValueDifference)
-                {
-                    temporaryStartingPoint[i] += AlgorithmRestrictions.MinimalStepSize * direction[i];
-                }
-            }
+            // step forward from the point in the direction by a step length
+            float[] directionStep = PointHelper.MultiplyPointByScalar(direction, AlgorithmRestrictions.MinimalStepSize);
+            temporaryStartingPoint = PointHelper.TwoPointFunction(temporaryStartingPoint, directionStep, PointHelper.Sum);
 
             return OptimizedExpression.Evaluate(startingPoint) > OptimizedExpression.Evaluate(temporaryStartingPoint);
         }
@@ -247,13 +216,9 @@ namespace Powell
             float[] temporaryStartingPoint = new float[DimensionOfProblem];
             startingPoint.CopyTo(temporaryStartingPoint, 0);
 
-            for (int i = 0; i < DimensionOfProblem; i++)
-            {
-                if (Math.Abs(direction[i]) > AlgorithmRestrictions.MinimalFunctionValueDifference)
-                {
-                    temporaryStartingPoint[i] -= AlgorithmRestrictions.MinimalStepSize * direction[i];
-                }
-            }
+            // step backward from the point in the direction by a step length
+            float[] directionStep = PointHelper.MultiplyPointByScalar(direction, AlgorithmRestrictions.MinimalStepSize);
+            temporaryStartingPoint = PointHelper.TwoPointFunction(temporaryStartingPoint, directionStep, PointHelper.Difference);
 
             return OptimizedExpression.Evaluate(startingPoint) > OptimizedExpression.Evaluate(temporaryStartingPoint);
         }
@@ -281,25 +246,6 @@ namespace Powell
         }
 
         /// <summary>
-        /// Create an array of boolean values indicating whether a coordinate will be considered in further calculations.
-        /// </summary>
-        /// <param name="direction"></param>
-        /// <returns></returns>
-        private bool[] FindConsideredCoordinatesArrayInDirectionArray(float[] direction)
-        {
-            // create a flag array, which determines which elements from direction array will be used
-            bool[] consideredCoordinatesArray = new bool[DimensionOfProblem];
-            for (int i = 0; i < consideredCoordinatesArray.Count(); i++)
-            {
-                if (Math.Abs(direction[i]) > AlgorithmRestrictions.MinimalFunctionValueDifference)
-                {
-                    consideredCoordinatesArray[i] = true;
-                }
-            }
-            return consideredCoordinatesArray;
-        }
-
-        /// <summary>
         /// Finds the second boundary point of a unimodal range along direction.
         /// </summary>
         /// <param name="firstPoint"></param>
@@ -311,33 +257,29 @@ namespace Powell
             float[] secondPoint = new float[DimensionOfProblem];
             firstPoint.CopyTo(secondPoint, 0);
 
-            // create a flag array, which determines which elements from direction array will be used
-            bool[] consideredCoordinates = FindConsideredCoordinatesArrayInDirectionArray(direction);
             float differenceBetweenConsecutivePointsValue = 0;
             float previousPointValue = OptimizedExpression.Evaluate(firstPoint);
-            bool maximumOffsetValueReached = false;
+
+            // function defining a step in given direction by a step
+            float directionStep(float point, float directionPoint) => point + directionTowardsMinimum * AlgorithmRestrictions.MinimalStepSize * directionPoint;
 
             do
             {
                 previousPointValue = OptimizedExpression.Evaluate(secondPoint);
 
-                for (int i = 0; i < DimensionOfProblem; i++)
-                {
-                    if (consideredCoordinates[i])
-                    {
-                        secondPoint[i] += directionTowardsMinimum * direction[i] * AlgorithmRestrictions.MinimalStepSize;
+                // step forward
+                secondPoint = PointHelper.TwoPointFunction(secondPoint, direction, directionStep);
 
-                        if (Math.Abs(secondPoint[i] - firstPoint[i]) > AlgorithmRestrictions.MaximalRangeWidth)
-                        {
-                            maximumOffsetValueReached = true;
-                            break;
-                        }
-                    }
-                }
-
+                // check difference between values of two most recent points
                 differenceBetweenConsecutivePointsValue = OptimizedExpression.Evaluate(secondPoint) - previousPointValue;
-
-            } while (!maximumOffsetValueReached && !(differenceBetweenConsecutivePointsValue > 0 && Math.Abs(differenceBetweenConsecutivePointsValue) > AlgorithmRestrictions.MinimalFunctionValueDifference));
+                
+                // WHILE
+                //    (difference between values of two most recent points is positive AND
+                //     difference between values of two most recent points is significantly large) AND
+                //    distance between points is lesser than maximal range
+            } while (!(differenceBetweenConsecutivePointsValue > 0
+                && Math.Abs(differenceBetweenConsecutivePointsValue) > AlgorithmRestrictions.MinimalFunctionValueDifference)
+                && FindDistanceBetweenTwoPoints(firstPoint, secondPoint) < AlgorithmRestrictions.MaximalRangeWidth);
 
             return secondPoint;
         }
@@ -377,68 +319,53 @@ namespace Powell
         }
 
         /// <summary>
-        /// Changes the direction base.
+        /// Changes the direction base, clearing it of previous directions and adding a new conjugate direction.
         /// </summary>
         private void ChangeDirectionSeries()
         {
-            if (NumberOfSwappedDirections == DimensionOfProblem)
-            {
-                FillDirectionSeriesWithCartesianCoordinateSystemBase();
-                NumberOfSwappedDirections = 0;
-            }
-            else
-            {
-                // changing direction base
-                float[] newDirection = new float[DimensionOfProblem];
-                float[] pointFirst = ConsecutivePointSeries[ConsecutivePointSeries.Count - DimensionOfProblem - 1];
-                float[] pointLast = ConsecutivePointSeries.Last();
+            // get indices of first and last considered point
+            int firstPointIndex = ConsecutivePointSeries.Count - DimensionOfProblem - 1;
+            int lastPointIndex = ConsecutivePointSeries.Count - 1;
+            
+            float[] pointFirst = ConsecutivePointSeries[firstPointIndex];
+            float[] pointLast = ConsecutivePointSeries[lastPointIndex];
 
-                // determining the distance between the first and the last point
-                float distanceBetweenFirstAndLastPoints = 0f;
+            float[] newDirection;
 
-                for (int j = 0; j < DimensionOfProblem; j++)
-                {
-                    distanceBetweenFirstAndLastPoints += (float)Math.Pow(pointLast[j] - pointFirst[j], 2.0);
-                }
-                distanceBetweenFirstAndLastPoints = (float)Math.Sqrt(distanceBetweenFirstAndLastPoints);
+            // determining the distance between the first and the last point
+            float distanceBetweenFirstAndLastPoints = FindDistanceBetweenTwoPoints(pointFirst, pointLast);
 
-                // preparing new direction
-                for (int j = 0; j < DimensionOfProblem; j++)
-                {
-                    newDirection[j] = (pointLast[j] - pointFirst[j]) / distanceBetweenFirstAndLastPoints;
-                }
+            // define a function creating a normalized conjugate direction
+            float normalizedDifference(float x, float y) => (x - y) / distanceBetweenFirstAndLastPoints;
+            newDirection = PointHelper.TwoPointFunction(pointLast, pointFirst, normalizedDifference);
 
-                // removing first direction and adding new one
-                DirectionSeries.RemoveAt(0);
-                DirectionSeries.Add(newDirection);
-                NumberOfSwappedDirections++;
-            }
+            // clear all directions, add the new one
+            DirectionSeries.Clear();
+            DirectionSeries.Add(newDirection);
         }
 
         /// <summary>
         /// Checks last two point changes for significant point distance change (above defined argument difference minimum).
         /// </summary>
         /// <returns></returns>
-        private bool CheckLastThreePointsForSignificantDistanceChange()
+        private bool CheckLastTwoPointsForSignificantDistanceChange()
         {
             int overallNumberOfPoints = ConsecutivePointSeries.Count;
 
-            return !(overallNumberOfPoints > 2
-                && FindDistanceBetweenTwoPoints(overallNumberOfPoints - 1, overallNumberOfPoints - 2) < AlgorithmRestrictions.MinimalArgumentDifference
-                && FindDistanceBetweenTwoPoints(overallNumberOfPoints - 2, overallNumberOfPoints - 3) < AlgorithmRestrictions.MinimalArgumentDifference);
+            return !(overallNumberOfPoints > 1
+                && FindDistanceBetweenTwoPointsByIndex(overallNumberOfPoints - 1, overallNumberOfPoints - 2) < AlgorithmRestrictions.MinimalArgumentDifference);
         }
 
         /// <summary>
         /// Checks last two point changes for significant value change (above defined value difference minimum).
         /// </summary>
         /// <returns></returns>
-        private bool CheckLastThreePointsForSignificantValueChange()
+        private bool CheckLastTwoPointsForSignificantValueChange()
         {
             int overallNumberOfPoints = ConsecutivePointSeries.Count;
 
             return !(overallNumberOfPoints > 2
-                && FindValueDifferenceBetweenTwoPoints(overallNumberOfPoints - 1, overallNumberOfPoints - 2) < AlgorithmRestrictions.MinimalArgumentDifference
-                && FindValueDifferenceBetweenTwoPoints(overallNumberOfPoints - 2, overallNumberOfPoints - 3) < AlgorithmRestrictions.MinimalArgumentDifference);
+                && FindValueDifferenceBetweenTwoPoints(overallNumberOfPoints - 1, overallNumberOfPoints - 2) < AlgorithmRestrictions.MinimalArgumentDifference);
         }
 
         /// <summary>
@@ -447,31 +374,40 @@ namespace Powell
         /// <returns></returns>
         private bool CheckLastTwoIterationsForSignificantChange()
         {
-            return CheckLastThreePointsForSignificantDistanceChange() || CheckLastThreePointsForSignificantValueChange();
+            return CheckLastTwoPointsForSignificantDistanceChange() || CheckLastTwoPointsForSignificantValueChange();
         }
 
         /// <summary>
-        /// Finds the the distance between two most recent points.
+        /// Finds the the distance between two given points.
         /// </summary>
+        /// <param name="firstPoint"></param>
+        /// <param name="secondPoint"></param>
         /// <returns></returns>
-        private float FindDistanceBetweenTwoPoints(int indexOfFirstPoint, int indexOfSecondPoint)
+        private float FindDistanceBetweenTwoPoints(float[] firstPoint, float[] secondPoint)
+        {
+            float[] arrayOfSquaredDifferences = PointHelper.TwoPointFunction(firstPoint, secondPoint, PointHelper.DifferenceSquared);
+            return (float)Math.Sqrt(arrayOfSquaredDifferences.Sum());
+        }
+
+        /// <summary>
+        /// Finds the the distance between two points given their indices.
+        /// </summary>
+        /// <param name="indexOfFirstPoint"></param>
+        /// <param name="indexOfSecondPoint"></param>
+        /// <returns></returns>
+        private float FindDistanceBetweenTwoPointsByIndex(int indexOfFirstPoint, int indexOfSecondPoint)
         {
             float[] lastPointInSeries = ConsecutivePointSeries[indexOfFirstPoint];
             float[] lastButOnePointInSeries = ConsecutivePointSeries[indexOfSecondPoint];
-
-            // determining the distance between the last two points
-            double distanceBetweenMostRecentPoints = 0f;
-
-            for (int j = 0; j < DimensionOfProblem; j++)
-            {
-                distanceBetweenMostRecentPoints += Math.Pow(lastPointInSeries[j] - lastButOnePointInSeries[j], 2.0);
-            }
-            return (float)Math.Sqrt(distanceBetweenMostRecentPoints);
+            float[] arrayOfSquaredDifferences = PointHelper.TwoPointFunction(lastPointInSeries, lastButOnePointInSeries, PointHelper.DifferenceSquared);
+            return (float)Math.Sqrt(arrayOfSquaredDifferences.Sum());
         }
 
         /// <summary>
-        /// Finds the the value difference between two most recent points.
+        /// Finds the the value difference between two points given their indices.
         /// </summary>
+        /// <param name="indexOfFirstPoint"></param>
+        /// <param name="indexOfSecondPoint"></param>
         /// <returns></returns>
         private float FindValueDifferenceBetweenTwoPoints(int indexOfFirstPoint, int indexOfSecondPoint)
         {
@@ -509,7 +445,7 @@ namespace Powell
                 float previousPointValue = OptimizedExpression.Evaluate(ConsecutivePointSeries.Last());
                 float[] newPoint = new float[startingPoint.Count()];
 
-                for (int i = 0; i < DimensionOfProblem && iterationNumber < AlgorithmRestrictions.NumberOfAcceptableIterations; i++)
+                for (int i = 0; i < DirectionSeries.Count && iterationNumber < AlgorithmRestrictions.NumberOfAcceptableIterations; i++)
                 {
                     ConsecutivePointSeries.Last().CopyTo(newPoint, 0);
                     ConsecutivePointSeries.Add(FindMinimalValuePointAlongDirection(newPoint, DirectionSeries[i]));
