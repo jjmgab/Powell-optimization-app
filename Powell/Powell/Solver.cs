@@ -84,16 +84,6 @@ namespace Powell
                     throw new ArgumentOutOfRangeException("numberOfAcceptableIterations", numberOfAcceptableIterations, "Number of iterations must be larger than 0.");
                 }
 
-                if (Math.Abs(minimalStepSize) < Math.Abs(minimalArgumentDifference))
-                {
-                    throw new ArgumentOutOfRangeException("MinimalStepSize", Math.Abs(minimalStepSize), "Minimal step size must be larger than minimal argument difference.");
-                }
-
-                if (Math.Abs(maximalRangeWidth) < Math.Abs(minimalStepSize))
-                {
-                    throw new ArgumentOutOfRangeException("MaximalRangeWidth", Math.Abs(maximalRangeWidth), "Maximal range width must be larger than minimal step size.");
-                }
-
                 NumberOfAcceptableIterations = numberOfAcceptableIterations;
                 MinimalArgumentDifference = Math.Abs(minimalArgumentDifference);
                 MinimalFunctionValueDifference = Math.Abs(minimalFunctionValueDifference);
@@ -352,8 +342,9 @@ namespace Powell
         {
             int overallNumberOfPoints = ConsecutivePointSeries.Count;
 
-            return !(overallNumberOfPoints > 1
-                && FindDistanceBetweenTwoPointsByIndex(overallNumberOfPoints - 1, overallNumberOfPoints - 2) < AlgorithmRestrictions.MinimalArgumentDifference);
+            return overallNumberOfPoints > 1
+                ? FindDistanceBetweenTwoPointsByIndex(overallNumberOfPoints - 1, overallNumberOfPoints - 2) > AlgorithmRestrictions.MinimalArgumentDifference
+                : true;
         }
 
         /// <summary>
@@ -364,8 +355,9 @@ namespace Powell
         {
             int overallNumberOfPoints = ConsecutivePointSeries.Count;
 
-            return !(overallNumberOfPoints > 2
-                && FindValueDifferenceBetweenTwoPoints(overallNumberOfPoints - 1, overallNumberOfPoints - 2) < AlgorithmRestrictions.MinimalArgumentDifference);
+            return overallNumberOfPoints > 2
+                ? FindValueDifferenceBetweenTwoPoints(overallNumberOfPoints - 1, overallNumberOfPoints - 2) > AlgorithmRestrictions.MinimalFunctionValueDifference
+                : true;
         }
 
         /// <summary>
@@ -374,7 +366,7 @@ namespace Powell
         /// <returns></returns>
         private bool CheckLastTwoIterationsForSignificantChange()
         {
-            return CheckLastTwoPointsForSignificantDistanceChange() || CheckLastTwoPointsForSignificantValueChange();
+            return CheckLastTwoPointsForSignificantDistanceChange() && CheckLastTwoPointsForSignificantValueChange();
         }
 
         /// <summary>
